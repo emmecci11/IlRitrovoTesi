@@ -388,4 +388,14 @@ class CReservation {
         }
     return $pastUserReservations;
     }
+
+    /**
+     * Function to show summary and deleting an axisting tableReservation
+     */
+    public function showRemoveReservation($idReservation) {
+        $session=USessions::getIstance();
+        $idUser=$session->readValue('idUser');
+        $reservation=FPersistentManager::getInstance()->read($idReservation, FReservation::class);
+        print_r($reservation);
+    }
 }

@@ -119,6 +119,15 @@
                         </li>
                         <li><strong>Total Amount:</strong> €{$reservation->getTotPrice()}</li>
                     </ul>
+
+                    <!-- Pulsante Disdici -->
+                    <div class="reservation-actions" style="text-align:right; margin-top:10px;">
+                        <a href="/IlRitrovo/public/Reservation/showRemoveReservation/{$reservation->getIdReservation()}"
+                            class="cancel-btn"
+                            style="background-color:#dc3545; color:#fff; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:background-color 0.2s;">
+                            Disdici
+                        </a>
+                    </div>
                 </div> <!-- /.reservation-card-->
             {/foreach}
         </div> <!-- /.panel-->
