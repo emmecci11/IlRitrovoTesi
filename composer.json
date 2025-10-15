@@ -1,0 +1,29 @@
+{
+    "name": "none/il-ritrovo",
+    "description": "A web application that simulates a restaurant",
+    "version": "1.0.0",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "None\\ilRitrovo\\": "src/",
+            "Entity\\": "src/Entity/",
+            "Foundation\\": "src/Foundation/",
+            "Controller\\": "src/Controller/",
+            "View\\": "src/View/",
+            "Utility\\": "src/Utility/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MarcoC"
+        },
+        {
+            "name": "SilviaDG"
+        }
+    ],
+    "require": {
+      "ext-pdo": "*",
+        "smarty/smarty": "^5.5",
+        "phpmailer/phpmailer": "^6.10"
+    }
+}

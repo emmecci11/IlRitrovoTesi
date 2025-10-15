@@ -1,0 +1,243 @@
+/* ---------------------------------------------
+   PANEL TITLE SECTION: "Extras"
+--------------------------------------------- */
+.panel-heading h3.panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #8b3a3a;
+  border-bottom: 2px dashed #c7b299;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* ---------------------------------------------
+   EXTRA LIST CONTAINER
+--------------------------------------------- */
+.extra-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem auto;
+  max-width: 700px;
+  width: 100%;
+}
+
+/* ---------------------------------------------
+   SINGLE EXTRA ITEM
+--------------------------------------------- */
+.extra-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #fef7ec;
+  border: 1px solid #e0d5c0;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.95rem;
+  color: #4a3b2c;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ---------------------------------------------
+   EXTRA INFO (Name + Price)
+--------------------------------------------- */
+.extra-info {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  gap: 1rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.extra-info > div {
+  flex: 1;
+  overflow: hidden;
+}
+
+.extra-info strong {
+  font-weight: 600;
+  color: #4a3b2c;
+  display: inline-block;
+  min-width: 60px;
+}
+
+.extra-info span {
+  font-size: 0.95rem;
+  color: #4a3b2c;
+}
+
+/* ---------------------------------------------
+   EDITABLE INPUT FIELD
+--------------------------------------------- */
+.editable-input {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid #c7b299;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #4a3b2c;
+  width: 100%;
+  max-width: 120px;
+}
+
+/* ---------------------------------------------
+   ACTIONS CONTAINER
+--------------------------------------------- */
+.extra-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+  width: auto;
+  justify-content: flex-end;
+}
+
+.extra-actions form {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  width: 60px;
+  height: 20px;
+}
+
+/* ---------------------------------------------
+   ACTION BUTTONS
+--------------------------------------------- */
+.edit-btn-circle,
+.delete-btn {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  width: 60px;
+  height: 20px;
+}
+
+.edit-btn-circle {
+  background-color: #8b3a3a;
+}
+.edit-btn-circle:hover {
+  background-color: #a14444;
+}
+
+.delete-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background-color: #a02f2f;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+.delete-btn:hover {
+  background-color: #d13a3a;
+}
+
+/* ---------------------------------------------
+   ADD EXTRA FORM CONTAINER
+--------------------------------------------- */
+.extra-form-container {
+  margin: 2rem auto;
+  max-width: 700px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------
+   ADD EXTRA FORM STYLES
+--------------------------------------------- */
+#add-extra-form {
+  background-color: #fef7ec;
+  padding: 1.2rem;
+  border: 1px solid #e0d5c0;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.04);
+  font-family: 'Open Sans', sans-serif;
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+}
+
+#add-extra-form label {
+  font-weight: 600;
+  color: #4a3b2c;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+#add-extra-form input,
+#add-extra-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #c7b299;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #4a3b2c;
+}
+
+#add-extra-form button {
+  background-color: #8b3a3a;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+#add-extra-form button:hover {
+  background-color: #a14444;
+}
+
+/* ---------------------------------------------
+   ADD EXTRA BUTTON (outside form)
+--------------------------------------------- */
+.add-extra-btn {
+  background-color: #8b3a3a;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 2rem auto 0;
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  transition: background-color 0.3s ease;
+  display: block;
+}
+
+.add-extra-btn:hover {
+  background-color: #a14444;
+}

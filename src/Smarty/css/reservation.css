@@ -1,0 +1,279 @@
+/* -----------------------------
+   STEP INDICATOR
+   -------------------------- */
+.step-indicator {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #c7b299;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #c7b299;
+  background: #fff;
+  font-family: 'Playfair Display', serif;
+}
+
+.step-circle.active {
+  background-color: #8b3a3a;
+  color: #fff;
+  border-color: #8b3a3a;
+}
+
+.step-line {
+  flex: 0 0 40px;
+  height: 2px;
+  background-color: #c7b299;
+}
+
+.step-separator {
+  border: none;
+  border-top: 1px dashed #c7b299;
+  margin: 2rem 0;
+}
+
+/* ---------------------------
+   BOOKING TITLE
+   --------------------------- */
+.panel-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: #8b3a3a;
+  text-align: center;
+  letter-spacing: 1px;
+  border-bottom: none;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.panel-heading::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: #c7b299;
+  margin: 0.6rem auto 0;
+  border-radius: 2px;
+}
+
+/* ---------------------------
+   BOOKING FORM
+   --------------------------- */
+.booking-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.booking-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.booking-form label {
+  display: block;
+  font-weight: 600;
+  color: #4a3b2c;
+  margin-bottom: 0.5rem;
+}
+
+.booking-form select,
+.booking-form input[type="number"],
+.booking-form input[type="date"],
+.booking-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #c7b299;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #4a3b2c;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* ---------------------------
+   FORM BUTTONS
+   --------------------------- */
+.reservation-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.reservation-form-buttons .btn-save-step,
+.reservation-form-buttons .btn-cancel-step {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-width: 140px;
+  text-align: center;
+}
+
+.reservation-form-buttons .btn-save-step {
+  background: #8b3a3a;
+  color: #fff;
+  border: none;
+}
+
+.reservation-form-buttons .btn-save-step:hover {
+  background: #a14444;
+}
+
+.reservation-form-buttons .btn-cancel-step {
+  background: transparent;
+  color: #8b3a3a;
+  border: 1px solid #8b3a3a;
+}
+
+.reservation-form-buttons .btn-cancel-step:hover {
+  background: #8b3a3a;
+  color: #fff;
+}
+
+/* ---------------------------
+   RESERVATION SUMMARY
+   --------------------------- */
+.reservation-summary {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px dashed #c7b299;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #4a3b2c;
+  width: 1000px;
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.summary-row.extras-row {
+  display: block;
+}
+
+.summary-row.extras-row .summary-title {
+  margin-bottom: 0.25rem;
+}
+
+.summary-row.extras-row .extras-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style-type: disc;
+}
+
+.summary-row p {
+  flex: 1 1 45%;
+  margin: 0;
+}
+
+/* ---------------------------
+   RESTAURANT MAP
+   --------------------------- */
+.restaurant-map {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.restaurant-map img {
+  max-width: 80%;
+  max-height: 450px;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid #e0d5c0;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------------------------
+   SELECTABLE EXTRA
+   --------------------------- */
+.extras-list {
+  padding-left: 1.2rem;
+  margin: 0;
+  list-style-type: disc;
+  font-size: 0.95rem;
+  color: #4a3b2c;
+}
+
+.extras-list li {
+  margin-bottom: 0.2rem;
+}
+
+.total-extras-box {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px dashed #c7b299;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0 2rem 0;
+  font-size: 1.1rem;
+  color: #4a3b2c;
+  text-align: right;
+  font-family: 'Open Sans', sans-serif;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.extras-row {
+  margin-top: 0.5rem;
+}
+
+.summary-title {
+  margin-bottom: 0.2rem;
+}
+
+.price-row {
+  margin-top: 1rem;
+  border-top: 1px solid #ccc;
+  padding-top: 0.5rem;
+}
+
+.price-row p strong {
+  color: #222;
+  font-weight: 600;
+}
+
+/* Hide default checkbox */
+.hidden-checkbox {
+  display: none;
+}
+
+/* Label style for extra */
+.custom-extra-label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  border: 2px solid #8b3a3a;
+  border-radius: 8px;
+  color: #8b3a3a;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  background-color: transparent;
+}
+
+/* Checked style */
+.hidden-checkbox:checked + .custom-extra-label {
+  background-color: #8b3a3a;
+  color: white;
+  box-shadow: 0 0 6px rgba(139, 58, 58, 0.4);
+}

@@ -1,0 +1,402 @@
+/* -------------------------------------------------
+   BASE
+------------------------------------------------- */
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: #4a3b2c;
+  background-color: #f8f1e8;
+}
+
+.separator {
+  border: none;
+  border-top: 1px dashed #c7b299;
+  margin: 1.2rem 0;
+}
+
+/* -------------------------------------------------
+   PANEL
+------------------------------------------------- */
+.panel {
+  background: #fef7ec;
+  border: 1px solid #e0d5c0;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+}
+
+.panel-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: #8b3a3a;
+  border-bottom: 2px dashed #c7b299;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* -------------------------------------------------
+   BUTTONS
+------------------------------------------------- */
+.btn {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.95rem;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn.edit,
+.btn.save {
+  background: #8b3a3a;
+}
+.btn.edit:hover,
+.btn.save:hover {
+  background: #a14444;
+}
+
+.btn.delete {
+  background: #a02f2f;
+}
+.btn.delete:hover {
+  background: #d13a3a;
+}
+
+/* -------------------------------------------------
+   PROFILE
+------------------------------------------------- */
+.profile-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.profile-image-section {
+  flex: 0 0 180px;
+  text-align: center;
+}
+
+.profile-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 3px solid #e0d5c0;
+  object-fit: cover;
+}
+
+.profile-info-section {
+  flex: 1 1 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.username-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: #6a4a4a;
+  margin: 0;
+}
+
+.user-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.credentials-row,
+.personal-data-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.credential-item,
+.personal-item {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+}
+
+.credential-item input,
+.personal-item input {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #c7b299;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.form-action-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* -------------------------------------------------
+   CARDS
+------------------------------------------------- */
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.credit-card {
+  background: #fff;
+  border: 1px solid #e0d5c0;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  font-size: 1rem;
+  flex: 0 0 280px;
+}
+
+.card-header {
+  font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-transform: uppercase;
+}
+
+.card-header.mastercard { background-color: #FF5F00; }
+.card-header.visa { background-color: #1a1f71; }
+.card-header.americanexpress { background-color: #002663; }
+.card-header.maestro { background-color: #EB001B; }
+.card-header.vpay { background-color: #1A1F71; }
+.card-header.pagobancomat { background-color: #0072bb; }
+
+.card-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.card-body li {
+  margin-bottom: 0.6rem;
+}
+
+.add-card-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: #fef7ec;
+  border: 1px dashed #ff9f43;
+  border-radius: 10px;
+  color: #ff9f43;
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+.add-card-btn .card-header {
+  font-size: 2.5rem;
+  user-select: none;
+  text-align: center;
+}
+
+/* -------------------------------------------------
+   CARD FORM
+------------------------------------------------- */
+.card-form {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 280px;
+  margin-bottom: 1rem;
+}
+
+.card-form label {
+  font-weight: 600;
+}
+
+.card-form input,
+.card-form select {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #c7b299;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+/* -------------------------------------------------
+   RESERVATIONS
+------------------------------------------------- */
+.reservation-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.reservation-card {
+  background: #fff;
+  border: 1px solid #e0d5c0;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.reservation-header {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #8b3a3a;
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed #c7b299;
+  padding-bottom: 0.5rem;
+}
+
+.reservation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.reservation-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #4a3b2c;
+}
+
+.reservation-row span {
+  flex: 1 1 45%;
+  word-break: break-word;
+}
+
+.extras-list {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 0;
+  color: #4a3b2c;
+  font-size: 0.95rem;
+}
+
+/* -------------------------------------------------
+   REVIEWS
+------------------------------------------------- */
+.review-form,
+.existing-review {
+  background: #fef7ec;
+  border: 1px solid #e0d5c0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.review-form label {
+  display: block;
+  font-weight: 600;
+  color: #4a3b2c;
+  margin-top: 1rem;
+}
+
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #c7b299;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #4a3b2c;
+  margin-top: 0.3rem;
+}
+
+.existing-review p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.rating-stars {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.3rem;
+  font-size: 1.5rem;
+}
+
+.rating-stars input[type="radio"] {
+  display: none;
+}
+
+.rating-stars label {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.rating-stars input[type="radio"]:checked ~ label {
+  color: #ffb400;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  color: #ffda79;
+}
+
+/* -------------------------------------------------
+   RESPONSIVE
+------------------------------------------------- */
+@media (max-width: 768px) {
+  .profile-container,
+  .card-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-info-section,
+  .credit-card,
+  .card-form {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .credentials-row,
+  .personal-data-row {
+    flex-direction: column;
+  }
+
+  .credential-item,
+  .personal-item,
+  .user-info-group .edit-btn {
+    width: 100%;
+  }
+
+  .reservation-container {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-row {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .panel-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

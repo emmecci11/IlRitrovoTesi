@@ -1,0 +1,119 @@
+/* ---------------------------
+   BODY AND BASE TEXT STYLES
+   --------------------------- */
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #fdfaf5;
+  color: #4a3b2c;
+  line-height: 1.6;
+}
+
+/* ---------------------------
+   MAIN HEADINGS
+   --------------------------- */
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin: 0;
+}
+
+/* ---------------------------
+   SLOGAN STYLING
+   --------------------------- */
+.slogan {
+  font-style: italic;
+  margin-top: 0.5rem;
+  color: #6a5d4d;
+}
+
+/* ---------------------------
+   MAIN CONTENT CONTAINER
+   --------------------------- */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* ---------------------------
+   SECTIONS SPACING
+   --------------------------- */
+section {
+  margin-bottom: 2.5rem;
+}
+
+/* ---------------------------
+   SECONDARY HEADINGS (h2)
+   --------------------------- */
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px dashed #c7b299;
+  padding-bottom: 0.5rem;
+}
+
+/* ---------------------------
+   LISTS STYLING
+   --------------------------- */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 0.8rem;
+}
+
+/* ---------------------------
+   PARAGRAPH STYLING
+   --------------------------- */
+p {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  color: #4a3b2c;
+  max-width: 65ch;
+  line-height: 1.6;
+}
+
+/* ---------------------------
+   PRICE TEXT STYLE
+   --------------------------- */
+.price {
+  float: right;
+  color: #8b3a3a;
+  font-weight: bold;
+}
+
+/* ---------------------------
+   WINE LINKS STYLING
+   --------------------------- */
+.wines a {
+  color: #8b3a3a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.wines a:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------
+   FIXED MENU BOX
+   --------------------------- */
+.fixed-menu {
+  padding: 1.5rem;
+  background-color: #fef7ec;
+  border: 1px solid #e0d5c0;
+  border-radius: 12px;
+}
+
+/* ---------------------------
+   FIXED PRICE INSIDE FIXED MENU
+   --------------------------- */
+.fixed-menu .fixed-price {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: #8b3a3a;
+}

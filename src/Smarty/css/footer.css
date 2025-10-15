@@ -1,0 +1,79 @@
+/* ---------------------------------------------
+   FOOTER BASE STYLES
+--------------------------------------------- */
+footer {
+  background-color: #f4eadd;
+  color: #6a5d4d;
+  padding: 2rem 1rem;
+  border-top: 1px solid #e0d5c0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* ---------------------------------------------
+   FOOTER CONTAINER & LAYOUT
+--------------------------------------------- */
+.footer-content,
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------
+   FOOTER TEXT & LINKS
+--------------------------------------------- */
+.footer-content p,
+.footer-bottom p {
+  margin: 0.3rem 0;
+}
+
+.footer-content a {
+  color: inherit;
+  text-decoration: none;
+  text-align: center; /* force center alignment inside link */
+  display: inline;
+}
+
+/* ---------------------------------------------
+   FOOTER BOTTOM SECTION
+--------------------------------------------- */
+.footer-bottom {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #a08e79;
+}
+
+/* ---------------------------------------------
+   RESPONSIVE - TABLET VIEW (≤ 900px)
+--------------------------------------------- */
+@media (max-width: 900px) {
+  footer {
+    padding: 1.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .footer-bottom {
+    font-size: 0.75rem;
+  }
+}
+
+/* ---------------------------------------------
+   RESPONSIVE - MOBILE VIEW (≤ 600px)
+--------------------------------------------- */
+@media (max-width: 600px) {
+  footer {
+    padding: 1rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-content p {
+    margin: 0.2rem 0;
+  }
+
+  .footer-bottom {
+    font-size: 0.7rem;
+    margin-top: 0.8rem;
+  }
+}

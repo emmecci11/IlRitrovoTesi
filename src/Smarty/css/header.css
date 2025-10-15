@@ -1,0 +1,154 @@
+/* ---------------------------------------------
+   HEADER BASE STYLES
+--------------------------------------------- */
+header {
+  background-color: #f4eadd;
+  border-bottom: 1px solid #e0d5c0;
+  height: 70px;
+}
+
+/* ---------------------------------------------
+   HEADER LAYOUT & STRUCTURE
+--------------------------------------------- */
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  height: 100%;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------
+   LOGO & SITE NAME
+--------------------------------------------- */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.site-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin: 0;
+  color: #4a3b2c;
+}
+
+/* ---------------------------------------------
+   MAIN NAVIGATION
+--------------------------------------------- */
+.main-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav a {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #4a3b2c;
+  text-decoration: none;
+}
+
+.main-nav a:hover {
+  color: #8b3a3a;
+}
+
+/* ---------------------------------------------
+   USER ACTION BUTTONS
+--------------------------------------------- */
+.user-area {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.user-button {
+  background-color: #8b3a3a;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.user-button:hover {
+  background-color: #a44a4a;
+}
+
+/* ---------------------------------------------
+   RESPONSIVE - TABLET VIEW (≤ 900px)
+--------------------------------------------- */
+@media (max-width: 900px) {
+  .logo {
+    height: 60px;
+  }
+
+  .site-name {
+    font-size: 1.5rem;
+  }
+}
+
+/* ---------------------------------------------
+   RESPONSIVE - MOBILE VIEW (≤ 600px)
+--------------------------------------------- */
+@media (max-width: 600px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.5rem;
+  }
+
+  .logo {
+    height: 50px;
+  }
+
+  .site-name {
+    font-size: 1.3rem;
+  }
+
+  .main-nav {
+    width: 100%;
+    padding-top: 0.5rem;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .main-nav a {
+    font-size: 1.1rem;
+  }
+
+  .user-area {
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
