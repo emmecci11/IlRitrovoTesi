@@ -397,10 +397,12 @@ class CReservation {
         $viewR=new VReservation();
         $viewU=new VUser();
         $session=USessions::getIstance();
+        $session->startSession();
         if($isLogged=CUser::isLogged()) {
             $idUser=$session->readValue('idUser');
         }
         $idUser=$session->readValue('idUser');
+        $session->setValue('idReservation', $idReservation);
         $reservation=FPersistentManager::getInstance()->read($idReservation, FReservation::class);
         $reservationDate=$reservation->getReservationDate();
         $timeFrame=$reservation->getReservationTimeFrame();
@@ -408,5 +410,19 @@ class CReservation {
         $comment=$reservation->getComment();
         $viewU->showUserHeader($isLogged);
         $viewR->showRemoveReservation($reservationDate, $timeFrame, $people, $comment);
+    }
+
+    /**
+     * Function to dimiss a Reservation
+     */
+    public function confirmRemoveReservation() {
+        $session=USessions::getIstance();
+        $session->startSession();
+        $idReservation=(int)$session->readValue('idReservation');
+        $res=FPersistentManager::getInstance()->delete($idReservation, FReservation::class);
+        $session->deleteValue('idReservation');
+        if ($res===true) {
+            header("Location: /IlRitrovo/public/User/showProfile");
+        }
     }
 }
