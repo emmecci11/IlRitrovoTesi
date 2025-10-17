@@ -3,6 +3,7 @@
 namespace View;
 
 use Entity\ECreditCard;
+use Entity\EReservation;
 use Entity\ERoom;
 use Utility\USmartyConfig;
 
@@ -140,4 +141,23 @@ class VReservation {
     $smarty->assign('selectedCard', $selectedCard);
     $smarty->display('roomReservation4.tpl');
     }
+
+    /**
+     * Function to show a Reservatio summary's in order to dimiss it
+     * 
+     * @param string $reservationDate
+     * @param string $timeFrame
+     * @param int $people
+     * @param string $comment
+     */
+    public function showRemoveReservation(string $reservationDate, string $timeFrame, int $people, string $comment) {
+        $smarty = new USmartyConfig();
+        $smarty->assign('reservationDate', $reservationDate);
+        $smarty->assign('timeFrame', $timeFrame);
+        $smarty->assign('people', $people);
+        $smarty->assign('comment', $comment);
+        $smarty->display('removeReservation.tpl');
+
+    }
+    
 }

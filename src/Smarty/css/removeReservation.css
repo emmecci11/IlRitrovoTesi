@@ -1,0 +1,20 @@
+.remove-reservation-actions .btn {
+  text-decoration: none;
+  background-color: #8b3a3a;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.remove-reservation-actions .btn.confirm {
+  margin-right: 1rem;
+}
+
+.remove-reservation-actions .btn.cancel {
+  background-color: #555;
+}

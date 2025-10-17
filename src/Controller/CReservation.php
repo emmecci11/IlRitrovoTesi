@@ -22,6 +22,7 @@ use View\VUser;
 use Utility\UEmail;
 use Utility\UHTTPMethods;
 use Utility\USessions;
+use View\VReview;
 
 /**
  * Class Controller CReservation
@@ -393,9 +394,19 @@ class CReservation {
      * Function to show summary and deleting an axisting tableReservation
      */
     public function showRemoveReservation($idReservation) {
+        $viewR=new VReservation();
+        $viewU=new VUser();
         $session=USessions::getIstance();
+        if($isLogged=CUser::isLogged()) {
+            $idUser=$session->readValue('idUser');
+        }
         $idUser=$session->readValue('idUser');
         $reservation=FPersistentManager::getInstance()->read($idReservation, FReservation::class);
-        print_r($reservation);
+        $reservationDate=$reservation->getReservationDate();
+        $timeFrame=$reservation->getReservationTimeFrame();
+        $people=$reservation->getPeople();
+        $comment=$reservation->getComment();
+        $viewU->showUserHeader($isLogged);
+        $viewR->showRemoveReservation($reservationDate, $timeFrame, $people, $comment);
     }
 }
