@@ -207,6 +207,9 @@
                             </li>
                             <li><strong>Total Amount:</strong> €{$reservation->getTotPrice()}</li>
                         </ul>
+                        <div class="payment-info">
+                            <a href="/IlRitrovo/public/Reservation/showInvoice/{$reservation->getIdReservation()}" class="btn download-invoice" style="display: inline-block; background-color:#8b3a3a; color:#fff; padding:8px 8px; border-radius:8px; text-decoration:none; font-weight:bold;">Fattura</a>
+                        </div> <!-- /.payment-info -->
                     </div> <!-- /.reservation-card-->
                 {/foreach}
             </div> <!-- /.panel-->

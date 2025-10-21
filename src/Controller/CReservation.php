@@ -425,4 +425,24 @@ class CReservation {
             header("Location: /IlRitrovo/public/User/showProfile");
         }
     }
+
+    /**
+     * Function to display Reservation's Invoice
+     */
+    public function showInvoice($reservationId) {
+        $viewR=new VReservation();
+        $viewU=new VUser();
+        $session=USessions::getIstance();
+        if($isLogged=CUser::isLogged()) {
+            $idUser=$session->readValue('idUser');
+            $viewU->showUserHeader($isLogged);
+        } else {
+            print("Registrati per continuare");
+        }
+        //Raccolta dei dati della prenotazione
+        $reservation=FPersistentManager::getInstance()->read($reservationId, FReservation::class);
+        $totPrice=$reservation->getTotPrice();
+
+        $viewR->showInvoiceDetails($totPrice);
+    }
 }

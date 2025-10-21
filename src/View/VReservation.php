@@ -5,6 +5,7 @@ namespace View;
 use Entity\ECreditCard;
 use Entity\EReservation;
 use Entity\ERoom;
+use Smarty\Smarty;
 use Utility\USmartyConfig;
 
 /**
@@ -158,6 +159,15 @@ class VReservation {
         $smarty->assign('comment', $comment);
         $smarty->display('removeReservation.tpl');
 
+    }
+
+    /**
+     * Function to show invoice Page
+     */
+    public function showInvoiceDetails(float $totPrice) {
+        $smarty=new USmartyConfig();
+        $smarty->assign('totPrice', $totPrice);
+        $smarty->display('invoice.tpl');
     }
     
 }
