@@ -11,7 +11,7 @@ class EDeliveryItem implements JsonSerializable {
     /**
      * @var int ID dell'item di consegna
      */
-    private int $idDeliveryItem;
+    private ?int $idDeliveryItem;
 
     /**
      * @var int ID della prenotazione di consegna
@@ -36,13 +36,13 @@ class EDeliveryItem implements JsonSerializable {
     /**
      * Costruttore.
      *
-     * @param int   $idDeliveryItem  ID dell'item di consegna
+     * @param ?int   $idDeliveryItem  ID dell'item di consegna
      * @param int   $idDeliveryReservation  ID della prenotazione di consegna
      * @param int   $idProduct      ID del prodotto (relazionato con EProduct)
      * @param int $quantity       Quantità dell'item di consegna
      * @param float $subtotal       Totale dell'item di consegna
      */
-    public function __construct(int $idDeliveryItem, int $idDeliveryReservation, int $idProduct, int $quantity, float $subtotal) {
+    public function __construct(?int $idDeliveryItem, int $idDeliveryReservation, int $idProduct, int $quantity, float $subtotal) {
         $this->setIdDeliveryItem($idDeliveryItem);
         $this->setIdDeliveryReservation($idDeliveryReservation);
         $this->setIdProduct($idProduct);
@@ -55,7 +55,7 @@ class EDeliveryItem implements JsonSerializable {
      *
      * @return int ID dell'item di consegna
      */
-    public function getIdDeliveryItem(): int {
+    public function getIdDeliveryItem(): ?int {
         return $this->idDeliveryItem;
     }
 
@@ -64,7 +64,7 @@ class EDeliveryItem implements JsonSerializable {
      *
      * @param int   $idDeliveryItem  ID dell'item di consegna
      */
-    public function setIdDeliveryItem(int $idDeliveryItem): void {
+    public function setIdDeliveryItem(?int $idDeliveryItem): void {
         $this->idDeliveryItem = $idDeliveryItem;
     }
 

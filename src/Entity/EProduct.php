@@ -3,9 +3,10 @@
 namespace Entity;
 use JsonSerializable;
 
-enum type: string {
-    case PIZZA = 'Pizza';
-    case BIBITA = 'Bibita';
+
+enum ProductType: string {
+    case PIZZA = 'PIZZA';
+    case BIBITA = 'BIBITA';
 }
 
 /**
@@ -13,9 +14,9 @@ enum type: string {
  */
 class EProduct {
     /**
-     * @var int ID del prodotto
+     * @var ?int ID del prodotto
      */
-    private int $idProduct;
+    private ?int $idProduct;
 
     /**
      * @var string Nome del prodotto
@@ -25,7 +26,7 @@ class EProduct {
     /**
      * Enum che rappresenta il tipo di prodotto.
      */
-    protected type $type;
+    protected ProductType $ProductType;
 
     /**
      * @var float Prezzo del prodotto
@@ -37,13 +38,13 @@ class EProduct {
      * 
      * @param ?int idProduct
      * @param string name
-     * @param type $type
+     * @param ProductType $ProductType
      * @param float price
      */
-    public function __construct(?int $idProduct, string $name, type $type, float $price) {
+    public function __construct(?int $idProduct, string $name, ProductType $ProductType, float $price) {
         $this->idProduct=$idProduct;
         $this->name=$name;
-        $this->type=$type;
+        $this->ProductType=$ProductType;
         $this->price=$price;
     }
 
@@ -52,7 +53,7 @@ class EProduct {
      *
      * @return int ID del prodotto
      */
-    public function getIdProduct(): int {
+    public function getIdProduct(): ?int {
         return $this->idProduct;
     }
 
@@ -84,6 +85,24 @@ class EProduct {
     }
 
     /**
+     * Ottieni il tipo di prodotto
+     */
+    public function getProductType(): string {
+        return $this->ProductType?->value;
+    }
+
+    /**
+     * Imposta il tipo di prodotto
+     * 
+     * @param string $type Tipo del prodotto
+     */
+    public function setProductType(string $ProductType): void {
+        $enum=ProductType::tryFrom($ProductType);
+        $this->ProductType=$enum;
+    }
+
+
+    /**
      * Ottieni il prezzo del prodotto.
      *
      * @return float Prezzo del prodotto
@@ -110,7 +129,7 @@ class EProduct {
         return [
             'idProduct' => $this->idProduct,
             'name'      => $this->name,
-            'type' => $this->type->value,
+            'ProductType' => $this->ProductType->value,
             'price'     => $this->price,
         ];
     }

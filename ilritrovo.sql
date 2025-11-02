@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Creato il: Lug 08, 2025 alle 00:34
--- Versione del server: 10.4.28-MariaDB
--- Versione PHP: 8.2.4
+-- Creato il: Nov 01, 2025 alle 17:09
+-- Versione del server: 8.0.36
+-- Versione PHP: 8.0.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ilRitrovo`
+-- Database: `my_progettoilritrovo`
 --
 
 -- --------------------------------------------------------
@@ -28,13 +28,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `creditcard` (
-  `idCreditCard` int(11) NOT NULL,
-  `holder` varchar(128) NOT NULL,
-  `number` varchar(19) NOT NULL,
-  `cvv` int(3) NOT NULL,
+  `idCreditCard` int NOT NULL,
+  `holder` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `number` varchar(19) COLLATE utf8mb4_general_ci NOT NULL,
+  `cvv` int NOT NULL,
   `expiration` date NOT NULL,
-  `type` varchar(16) NOT NULL,
-  `idUser` int(11) NOT NULL
+  `type` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `idUser` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -44,11 +44,11 @@ CREATE TABLE `creditcard` (
 INSERT INTO `creditcard` (`idCreditCard`, `holder`, `number`, `cvv`, `expiration`, `type`, `idUser`) VALUES
 (1, 'Marco Cipriani', '1234567890121212', 123, '2027-12-31', 'Visa', 1),
 (2, 'Marco Cipriani', '1234567890232323', 345, '2026-12-31', 'Mastercard', 1),
-(3, 'Mario Rossi', '1234567890343434', 567, '2027-12-31', 'Visa', 3),
 (4, 'Mario Rossi', '1234567890454545', 789, '2028-12-31', 'American Express', 3),
 (5, 'Luigi Verdi', '1234567890565656', 98, '2029-12-31', 'Visa', 4),
 (6, 'Luna Neri', '1234567890676767', 765, '2026-12-31', 'Mastercard', 5),
-(7, 'Stephen Strange', '1234567890787878', 432, '2027-12-31', 'American Express', 6);
+(7, 'Stephen Strange', '1234567890787878', 432, '2027-12-31', 'American Express', 6),
+(10, 'Serena Stante', '1092198628461839', 567, '2026-06-19', 'Visa', 10);
 
 --
 -- Trigger `creditcard`
@@ -65,12 +65,41 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `deliveryitem`
+--
+
+CREATE TABLE `deliveryitem` (
+  `idDeliveryItem` int NOT NULL,
+  `idDeliveryReservation` int NOT NULL,
+  `idProduct` int NOT NULL,
+  `quantity` int NOT NULL,
+  `subtotal` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `deliveryreservation`
+--
+
+CREATE TABLE `deliveryreservation` (
+  `idDeliveryReservation` int NOT NULL,
+  `idUser` int UNSIGNED NOT NULL,
+  `userPhone` varchar(20) NOT NULL,
+  `userAddress` varchar(255) NOT NULL,
+  `userNumberAddress` int NOT NULL,
+  `wishedTime` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `extra`
 --
 
 CREATE TABLE `extra` (
-  `idExtra` int(11) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `idExtra` int NOT NULL,
+  `name` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `price` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -100,8 +129,8 @@ INSERT INTO `extra` (`idExtra`, `name`, `price`) VALUES
 --
 
 CREATE TABLE `extrainreservation` (
-  `idExtra` int(11) NOT NULL,
-  `idReservation` int(11) NOT NULL
+  `idExtra` int NOT NULL,
+  `idReservation` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -124,12 +153,12 @@ INSERT INTO `extrainreservation` (`idExtra`, `idReservation`) VALUES
 --
 
 CREATE TABLE `payment` (
-  `idPayment` int(11) NOT NULL,
-  `total` int(4) NOT NULL,
+  `idPayment` int NOT NULL,
+  `total` int NOT NULL,
   `creationTime` date NOT NULL,
-  `state` enum('pending','completed','failed','canceled') NOT NULL,
-  `idCreditCard` int(11) NOT NULL,
-  `idReservation` int(10) NOT NULL
+  `state` enum('pending','completed','failed','canceled') COLLATE utf8mb4_general_ci NOT NULL,
+  `idCreditCard` int NOT NULL,
+  `idReservation` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -139,7 +168,21 @@ CREATE TABLE `payment` (
 INSERT INTO `payment` (`idPayment`, `total`, `creationTime`, `state`, `idCreditCard`, `idReservation`) VALUES
 (1, 130, '2025-04-10', 'completed', 5, 3),
 (2, 105, '2025-05-20', 'completed', 7, 7),
-(3, 180, '2025-07-01', 'completed', 5, 9);
+(3, 180, '2025-07-01', 'completed', 5, 9),
+(9, 90, '2025-07-08', 'completed', 10, 23);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `product`
+--
+
+CREATE TABLE `product` (
+  `idProduct` int UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `type` enum('PIZZA','BIBITA') NOT NULL,
+  `price` decimal(6,2) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -148,9 +191,9 @@ INSERT INTO `payment` (`idPayment`, `total`, `creationTime`, `state`, `idCreditC
 --
 
 CREATE TABLE `reply` (
-  `idReply` int(11) NOT NULL,
+  `idReply` int NOT NULL,
   `dateReply` date NOT NULL,
-  `body` varchar(512) NOT NULL
+  `body` varchar(512) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -161,7 +204,8 @@ INSERT INTO `reply` (`idReply`, `dateReply`, `body`) VALUES
 (1, '2025-03-18', 'Thank you! Hope we see  you back soon!'),
 (2, '2025-04-17', 'Thank you! Hope we see  you back soon!'),
 (3, '2025-05-05', 'Thank you! Hope we see  you back soon!'),
-(4, '2025-05-26', 'This is disrespectful');
+(4, '2025-05-26', 'This is disrespectful'),
+(6, '2025-07-13', 'Thank you!');
 
 -- --------------------------------------------------------
 
@@ -170,17 +214,17 @@ INSERT INTO `reply` (`idReply`, `dateReply`, `body`) VALUES
 --
 
 CREATE TABLE `reservation` (
-  `idReservation` int(11) NOT NULL,
-  `timeFrame` enum('lunch','dinner') NOT NULL,
+  `idReservation` int NOT NULL,
+  `timeFrame` enum('lunch','dinner') COLLATE utf8mb4_general_ci NOT NULL,
   `reservationDate` date NOT NULL,
-  `comment` varchar(256) NOT NULL,
-  `people` int(3) NOT NULL,
-  `totPrice` int(4) NOT NULL,
-  `state` varchar(16) NOT NULL,
+  `comment` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+  `people` int NOT NULL,
+  `totPrice` int NOT NULL,
+  `state` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
   `creationTime` date NOT NULL,
-  `idUser` int(11) NOT NULL,
-  `idRoom` int(11) DEFAULT NULL,
-  `idTable` int(11) DEFAULT NULL
+  `idUser` int NOT NULL,
+  `idRoom` int DEFAULT NULL,
+  `idTable` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -199,7 +243,12 @@ INSERT INTO `reservation` (`idReservation`, `timeFrame`, `reservationDate`, `com
 (9, 'dinner', '2025-07-23', 'a lactose intollerant is dining with us', 50, 180, 'confirmed', '2025-07-01', 4, 3, NULL),
 (10, 'lunch', '2025-07-23', '', 4, 0, 'confirmed', '2025-07-02', 5, NULL, 5),
 (11, 'lunch', '2025-07-23', 'a celiac is dining with us', 4, 0, 'confirmed', '2025-07-03', 1, NULL, 11),
-(12, 'dinner', '2025-07-23', 'we need an high chair', 4, 0, 'confirmed', '2025-07-04', 3, NULL, 9);
+(12, 'dinner', '2025-07-23', 'we need an high chair', 4, 0, 'confirmed', '2025-07-04', 3, NULL, 9),
+(23, 'dinner', '2025-11-08', 'kitten friendly', 10, 90, 'approved', '2025-07-08', 10, 1, NULL),
+(24, 'lunch', '2025-07-13', 'We have a lactose intollerant dining with us', 20, 105, 'approved', '2025-07-13', 11, 1, NULL),
+(25, 'dinner', '2025-07-23', 'We need a high chair', 4, 0, 'confirmed', '2025-07-13', 11, NULL, 12),
+(29, 'dinner', '2027-10-21', 'prova prenotazione tesi', 10, 0, 'confirmed', '2025-10-21', 3, NULL, 6),
+(30, 'lunch', '2027-10-23', 'prenotazione prova tesi 2', 5, 0, 'confirmed', '2025-10-21', 3, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -208,12 +257,12 @@ INSERT INTO `reservation` (`idReservation`, `timeFrame`, `reservationDate`, `com
 --
 
 CREATE TABLE `review` (
-  `idUser` int(11) NOT NULL,
-  `idReview` int(11) NOT NULL,
-  `stars` int(1) NOT NULL,
+  `idUser` int NOT NULL,
+  `idReview` int NOT NULL,
+  `stars` int NOT NULL,
   `creationTime` date NOT NULL,
-  `body` varchar(512) NOT NULL,
-  `idReply` int(11) DEFAULT NULL
+  `body` varchar(512) COLLATE utf8mb4_general_ci NOT NULL,
+  `idReply` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -221,9 +270,9 @@ CREATE TABLE `review` (
 --
 
 INSERT INTO `review` (`idUser`, `idReview`, `stars`, `creationTime`, `body`, `idReply`) VALUES
-(3, 1, 5, '2025-03-17', 'A wonderful experience in a wonderful place', 1),
-(4, 2, 4, '2025-04-15', 'Such a nice place. The food in incredible and the staff is amazing', 2),
-(5, 3, 4, '2025-05-01', 'First time here, i had a very nice dinner', 3),
+(3, 1, 5, '2025-03-17', '5 stars, a beautiful place and a lover of kittens🐈‍⬛', 1),
+(4, 2, 4, '2025-04-15', 'Such a nice place. I can sum it all up in one word: MEOW🐾', 2),
+(5, 3, 4, '2025-05-01', 'First time here, I had a very nice dinner with my kittens🐈', 3),
 (6, 4, 2, '2025-05-25', 'This place is awful', 4);
 
 --
@@ -245,9 +294,9 @@ DELIMITER ;
 --
 
 CREATE TABLE `room` (
-  `idRoom` int(11) NOT NULL,
-  `areaName` varchar(64) NOT NULL,
-  `maxGuests` int(3) NOT NULL,
+  `idRoom` int NOT NULL,
+  `areaName` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `maxGuests` int NOT NULL,
   `tax` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -267,9 +316,9 @@ INSERT INTO `room` (`idRoom`, `areaName`, `maxGuests`, `tax`) VALUES
 --
 
 CREATE TABLE `tables` (
-  `idTable` int(11) NOT NULL,
-  `areaName` varchar(64) NOT NULL,
-  `maxGuests` int(3) NOT NULL
+  `idTable` int NOT NULL,
+  `areaName` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `maxGuests` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -299,17 +348,17 @@ INSERT INTO `tables` (`idTable`, `areaName`, `maxGuests`) VALUES
 --
 
 CREATE TABLE `user` (
-  `idUser` int(11) NOT NULL,
-  `idReview` int(11) DEFAULT NULL,
-  `username` varchar(32) NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `surname` varchar(32) NOT NULL,
+  `idUser` int NOT NULL,
+  `idReview` int DEFAULT NULL,
+  `username` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
+  `surname` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
   `birthDate` date NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `role` enum('user','admin') NOT NULL DEFAULT 'user',
-  `email` varchar(64) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `ban` tinyint(1) DEFAULT 0
+  `phone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('user','admin') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'user',
+  `email` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `ban` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -322,7 +371,8 @@ INSERT INTO `user` (`idUser`, `idReview`, `username`, `name`, `surname`, `birthD
 (3, 1, 'superMario', 'Mario', 'Rossi', '1980-02-16', '0987654321', 'user', 'marioRossi@gmail.com', '$2y$10$acxtqCubAsOfBSzZTRqTV.HMp/gYO9k28BwadTAcIwyRv.TzuqB7W', 0),
 (4, 2, 'Luigi95', 'Luigi', 'Verdi', '1995-03-17', '0987654321', 'user', 'luigiVerdi@gmail.com', '$2y$10$acxtqCubAsOfBSzZTRqTV.HMp/gYO9k28BwadTAcIwyRv.TzuqB7W', 0),
 (5, 3, 'Moon', 'Luna', 'Neri', '1998-04-18', '1234567890', 'user', 'lunaNeri@gmail.com', '$2y$10$acxtqCubAsOfBSzZTRqTV.HMp/gYO9k28BwadTAcIwyRv.TzuqB7W', 0),
-(6, 4, 'Magician', 'Stephen', 'Strange', '1970-05-20', '1234567890', 'user', 'stephenStrange@gmail.com', '$2y$10$acxtqCubAsOfBSzZTRqTV.HMp/gYO9k28BwadTAcIwyRv.TzuqB7W', 1);
+(6, 4, 'Magician', 'Stephen', 'Strange', '1970-05-20', '1234567890', 'user', 'stephenStrange@gmail.com', '$2y$10$acxtqCubAsOfBSzZTRqTV.HMp/gYO9k28BwadTAcIwyRv.TzuqB7W', 1),
+(10, NULL, 'serekitten09', 'Serena', 'Stante', '2004-10-09', '+393406813572', 'user', 'stanteserena@gmail.com', '$2y$12$tAC0ziRQ4jy5lJiHpEmLO.CsVgHJMFOcHTJaImVDT0cAvqTjLl46i', 0);
 
 --
 -- Indici per le tabelle scaricate
@@ -338,6 +388,21 @@ ALTER TABLE `creditcard`
   ADD KEY `idUser` (`idUser`);
 
 --
+-- Indici per le tabelle `deliveryitem`
+--
+ALTER TABLE `deliveryitem`
+  ADD PRIMARY KEY (`idDeliveryItem`),
+  ADD KEY `idDeliveryReservation` (`idDeliveryReservation`),
+  ADD KEY `idProduct` (`idProduct`);
+
+--
+-- Indici per le tabelle `deliveryreservation`
+--
+ALTER TABLE `deliveryreservation`
+  ADD PRIMARY KEY (`idDeliveryReservation`),
+  ADD KEY `idUser` (`idUser`);
+
+--
 -- Indici per le tabelle `extra`
 --
 ALTER TABLE `extra`
@@ -350,6 +415,12 @@ ALTER TABLE `payment`
   ADD PRIMARY KEY (`idPayment`),
   ADD KEY `idCreditCard` (`idCreditCard`),
   ADD KEY `idRservation` (`idReservation`);
+
+--
+-- Indici per le tabelle `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`idProduct`);
 
 --
 -- Indici per le tabelle `reply`
@@ -401,55 +472,73 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT per la tabella `creditcard`
 --
 ALTER TABLE `creditcard`
-  MODIFY `idCreditCard` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idCreditCard` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT per la tabella `deliveryitem`
+--
+ALTER TABLE `deliveryitem`
+  MODIFY `idDeliveryItem` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `deliveryreservation`
+--
+ALTER TABLE `deliveryreservation`
+  MODIFY `idDeliveryReservation` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `extra`
 --
 ALTER TABLE `extra`
-  MODIFY `idExtra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idExtra` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT per la tabella `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `idPayment` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idPayment` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT per la tabella `product`
+--
+ALTER TABLE `product`
+  MODIFY `idProduct` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `reply`
 --
 ALTER TABLE `reply`
-  MODIFY `idReply` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idReply` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `idReservation` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idReservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT per la tabella `review`
 --
 ALTER TABLE `review`
-  MODIFY `idReview` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idReview` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT per la tabella `room`
 --
 ALTER TABLE `room`
-  MODIFY `idRoom` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idRoom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `idTable` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idTable` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT per la tabella `user`
 --
 ALTER TABLE `user`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idUser` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Limiti per le tabelle scaricate

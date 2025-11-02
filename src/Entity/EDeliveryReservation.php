@@ -10,9 +10,9 @@ use DateTime;
  */
 class EDeliveryReservation implements JsonSerializable {
     /**
-     * @var int ID della prenotazione di consegna
+     * @var ?int ID della prenotazione di consegna
      */
-    private int $idDeliveryReservation;
+    private ?int $idDeliveryReservation;
 
     /**
      * @var int ID dell utente
@@ -42,14 +42,14 @@ class EDeliveryReservation implements JsonSerializable {
     /**
      * Costruttore.
      *
-     * @param int   $idDeliveryreservation  ID della prenotazione di consegna
+     * @param ?int   $idDeliveryreservation  ID della prenotazione di consegna
      * @param int   $idUser          ID dell utente
      * @param string $userPhone      Numero di telefono dell utente
      * @param string $userAddress    Indirizzo dell utente
      * @param int   $userNumberAddress  N. indirizzo dell utente (in base a un sistema di codice postale)
      * @param DateTime $wishedTime     Ora desiderata per la consegna
      */
-    public function __construct(int $idDeliveryReservation, int $idUser, string $userPhone, string $userAddress, int $userNumberAddress, DateTime $wishedTime) {
+    public function __construct(?int $idDeliveryReservation, int $idUser, string $userPhone, string $userAddress, int $userNumberAddress, DateTime $wishedTime) {
         $this->setIdDeliveryReservation($idDeliveryReservation);
         $this->setIdUser($idUser);
         $this->setUserPhone($userPhone);
@@ -63,7 +63,7 @@ class EDeliveryReservation implements JsonSerializable {
      *
      * @return int ID della prenotazione di consegna
      */
-    public function getIdDeliveryReservation(): int {
+    public function getIdDeliveryReservation(): ?int {
         return $this->idDeliveryReservation;
     }
 
@@ -72,7 +72,7 @@ class EDeliveryReservation implements JsonSerializable {
      *
      * @param int   $idDeliveryreservation  ID della prenotazione di consegna
      */
-    public function setIdDeliveryReservation(int $idDeliveryReservation): void {
+    public function setIdDeliveryReservation(?int $idDeliveryReservation): void {
         $this->idDeliveryReservation = $idDeliveryReservation;
     }
 
