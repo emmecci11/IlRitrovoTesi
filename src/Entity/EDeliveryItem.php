@@ -2,6 +2,7 @@
 
 namespace Entity;
 
+use Entity\EProduct;
 use JsonSerializable;
 
 /**

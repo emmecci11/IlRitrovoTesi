@@ -100,9 +100,10 @@ class VUser {
      * @param array $userCreditcards
      * @param array $userPastReservations
      * @param array $userFutureReservations
+     * @param array $deliveryData
      * @param null|EReview $userReview
      */
-    public function showProfile(string $username, string $email, string $name, string $surname, string $birthDate, string $phone, string $edit_section, array $userCreditCards,array $userPastReservations, array $userFutureReservations, ?EReview $userReview) {
+    public function showProfile(string $username, string $email, string $name, string $surname, string $birthDate, string $phone, string $edit_section, array $userCreditCards,array $userPastReservations, array $userFutureReservations, array $deliveryData, ?EReview $userReview) {
         $smarty = new USmartyConfig();
         $smarty->assign('username', $username);
         $smarty->assign('email', $email);
@@ -114,6 +115,7 @@ class VUser {
         $smarty->assign('cards', $userCreditCards);
         $smarty->assign('pastReservations', $userPastReservations);
         $smarty->assign('futureReservations', $userFutureReservations);
+        $smarty->assign('deliveryData', $deliveryData);
         $smarty->assign('review', $userReview);
         $smarty->display('userProfile.tpl');
     }

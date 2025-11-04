@@ -215,6 +215,40 @@
             </div> <!-- /.panel-->
         {/if}
 
+
+    <!--DELIVERY RESERVATION SECTION-->
+    {if $deliveryData|@count > 0}
+    <div class="panel">
+        <div class="panel-heading">My Delivery Reservations</div>
+
+        {foreach from=$deliveryData item=delivery}
+            <div class="reservation-card">
+                <ul>
+                    <li><strong>Phone:</strong> {$delivery.userPhone}</li>
+                    <li><strong>Address:</strong> {$delivery.userAddress}, {$delivery.userNumberAddress}</li>
+                    <li><strong>Wished Time:</strong> {$delivery.wishedTime->format('d/m/Y H:i')}</li>
+                </ul>
+
+                <div class="delivery-items">
+                    <strong>Items:</strong>
+                    <ul>
+                        {foreach from=$delivery.items item=item}
+                            <li>
+                                {$item.name} × {$item.quantity} — 
+                                <span style="color:#555;">€{$item.subtotal|number_format:2:",":"."}</span>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+
+                <div class="total-amount" style="text-align:right; font-weight:bold; margin-top:10px;">
+                    Total: €{$delivery.total|number_format:2:",":"."}
+                </div>
+            </div> <!-- /.reservation-card -->
+        {/foreach}
+    </div> <!-- /.panel -->
+    {/if}
+
         <!-- Footer-->
         {include file='footerUser.tpl'}
     </body>

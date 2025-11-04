@@ -6,8 +6,11 @@ use AllowDynamicProperties;
 use DateTime;
 use Entity\EArea;
 use Entity\ECreditCard;
+use Entity\EDeliveryItem;
+use Entity\EDeliveryReservation;
 use Entity\EExtra;
 use Entity\EPayment;
+use Entity\EProduct;
 use Entity\EReply;
 use Entity\EReservation;
 use Entity\EReview;
@@ -302,6 +305,28 @@ use Exception;
     }
 
     /**
+     * Read all delivery reservations for a given user.
+     *
+     * @param int $idUser
+     * @param string $fClass Foundation class name (FDeliveryReservation::class)
+     * @return array
+     */
+    public function readAllDeliveryByUser(int $idUser, string $fClass) {
+        return $this->performOperation('readAllDeliveryByUser', $fClass, $idUser);
+    }
+
+    /**
+     * Read all delivery items for a given delivery reservation.
+     *
+     * @param int $idDeliveryReservation
+     * @param string $fClass Foundation class name (FDeliveryItem::class)
+     * @return array
+     */
+    public function readAllItemsByReservation(int $idDeliveryReservation, string $fClass) {
+        return $this->performOperation('readAllItemsByReservation', $fClass, $idDeliveryReservation);
+    }
+
+    /**
      * Function to get Available tables
      * 
      * @param string $reservationDate
@@ -333,6 +358,9 @@ use Exception;
             ECreditCard::class => FCreditCard::class,
             EExtra::class => FExtra::class,
             EPayment::class => FPayment::class,
+            EProduct::class => FProduct::class,
+            EDeliveryItem::class => FDeliveryItem::class,
+            EDeliveryReservation::class => FDeliveryReservation::class,
             EReply::class => FReply::class,
             EReservation::class => FReservation::class,
             EReview::class => FReview::class,

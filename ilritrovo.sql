@@ -184,6 +184,17 @@ CREATE TABLE `product` (
   `price` decimal(6,2) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella 'product
+--
+
+INSERT INTO product (idProduct, name, type, price) VALUES
+(1, 'Pizza Margherita', 'PIZZA', 10.00),
+(2, 'Pizza Marinara', 'PIZZA', 9.50),
+(3, 'Pizza Diavola', 'PIZZA', 11.50),
+(4, 'Coca Cola', 'BIBITA', 3.00),
+(5, 'Fanta', 'BIBITA', 3.00);
+
 -- --------------------------------------------------------
 
 --

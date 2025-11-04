@@ -108,6 +108,30 @@ class FDeliveryReservation {
     }
 
     /**
+     * Restituisce tutte le prenotazioni di tipo delivery associate a un utente.
+     *
+     * @param int $idUser
+     * @return EDeliveryReservation[] Array di oggetti EDeliveryReservation
+     */
+    public static function readAllDeliveryByUser(int $idUser): array {
+        $db = FDatabase::getInstance();
+        $rows = $db->fetchDeliveryReservationsByUser($idUser);
+        $reservations = [];
+        foreach ($rows as $row) {
+            $reservation = new \Entity\EDeliveryReservation(
+                $row['idDeliveryReservation'],
+                $row['idUser'],
+                $row['userPhone'],
+                $row['userAddress'],
+                $row['userNumberAddress'],
+                new \DateTime($row['wishedTime'])
+            );
+            $reservations[] = $reservation;
+        }
+        return $reservations;
+    }
+
+    /**
      * Checks if a Delivery Reservation exists in the database.
      *
      * @param int $idDeliveryReservation The ID of the Delivery Reservation.
@@ -202,4 +226,5 @@ class FDeliveryReservation {
             'wishedTime' => $deliveryReservation->getWishedTime()->format('Y-m-d H:i:s')
         ];
     }
+
 }

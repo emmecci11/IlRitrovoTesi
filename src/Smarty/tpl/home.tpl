@@ -60,9 +60,11 @@
             {if $isLogged}
                 <a href="/IlRitrovo/public/Reservation/showTableForm" class="btn">Book Table</a>
                 <a href="/IlRitrovo/public/Reservation/showRoomForm" class="btn">Book Room</a>
+                <a href="/IlRitrovo/public/Reservation/showDeliveryReservation" class="btn">Book Delivery</a>
             {else}
                 <a href="/IlRitrovo/public/User/showLoginForm" class="btn">Book Table</a>
                 <a href="/IlRitrovo/public/User/showLoginForm" class="btn">Book Room</a>
+                <a href="/IlRitrovo/public/User/showLoginForm" class="btn">Book Delivery</a>
             {/if}
           </div> <!-- /.booking-buttons-->
       </div> <!-- /.booking-content-->

@@ -437,4 +437,47 @@ class FDatabase {
 
         return $this->fetchAll($sql, $params);
     }
+
+    /**
+     * Recupera tutte le delivery reservations di un utente, ordinate per data (più recenti prima).
+     *
+     * @param int $idUser
+     * @return array Array associativo di righe (ogni riga è una deliveryreservation)
+     */
+    public function fetchDeliveryReservationsByUser(int $idUser): array {
+        $sql = "
+            SELECT 
+                idDeliveryReservation,
+                idUser,
+                userPhone,
+                userAddress,
+                userNumberAddress,
+                wishedTime
+            FROM deliveryreservation
+            WHERE idUser = ?
+            ORDER BY wishedTime DESC
+        ";
+        return $this->fetchAll($sql, [$idUser]);
+    }
+
+    /**
+     * Recupera tutti i delivery items associati a una specifica delivery reservation.
+     *
+     * @param int $idDeliveryReservation
+     * @return array Array associativo di righe (ogni riga è un deliveryitem)
+     */
+    public function fetchDeliveryItemsByReservation(int $idDeliveryReservation): array {
+        $sql = "
+            SELECT 
+                idDeliveryItem,
+                idDeliveryReservation,
+                idProduct,
+                quantity,
+                subtotal
+            FROM deliveryitem
+            WHERE idDeliveryReservation = ?
+            ORDER BY idDeliveryItem ASC
+        ";
+        return $this->fetchAll($sql, [$idDeliveryReservation]);
+    }
 }

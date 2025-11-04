@@ -4,10 +4,14 @@ namespace Controller;
 
 use DateTime;
 use Exception;
+use Entity\EProduct;
 use Entity\EUser;
 use Entity\Role;
 use Foundation\FCreditCard;
+use Foundation\FDeliveryItem;
+use Foundation\FDeliveryReservation;
 use Foundation\FPersistentManager;
+use Foundation\FProduct;
 use Foundation\FReply;
 use Foundation\FReservation;
 use Foundation\FReview;
@@ -105,8 +109,46 @@ class CUser {
             $reply=FPersistentManager::getInstance()->read($userReview->getIdReply(), FReply::class);
             $userReview->setReply($reply);
         }
-        $view->showUserHeader($isLogged);
-        $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $userReview);
+        // === DELIVERY ORDERS ===
+        $userDeliveryReservations = FPersistentManager::getInstance()->readAllDeliveryByUser($idUser, FDeliveryReservation::class) ?? [];
+        $deliveryData = []; // array associativo per il tpl
+
+        foreach ($userDeliveryReservations as $delivery) {
+            $idDeliveryReservation = $delivery->getIdDeliveryReservation();
+
+            // Leggi tutti gli item associati
+            $items = FPersistentManager::getInstance()->readAllItemsByReservation($idDeliveryReservation, FDeliveryItem::class);
+
+            $total = 0;
+            $itemDetails = [];
+
+            foreach ($items as $item) {
+                // Recupera nome e prezzo del prodotto
+                $product = FPersistentManager::getInstance()->read($item->getIdProduct(), FProduct::class);
+                $nameProduct = $product->getNameProduct();
+                $quantity = $item->getQuantity();
+                $subtotal = $item->getSubtotal();
+                $total += $subtotal;
+
+                $itemDetails[] = [
+                    'name' => $nameProduct,
+                    'quantity' => $quantity,
+                    'subtotal' => $subtotal
+                ];
+            }
+
+            // compila dati riepilogo
+            $deliveryData[] = [
+                'userPhone' => $delivery->getUserPhone(),
+                'userAddress' => $delivery->getUserAddress(),
+                'userNumberAddress' => $delivery->getUserNumberAddress(),
+                'wishedTime' => $delivery->getWishedTime(),
+                'items' => $itemDetails,
+                'total' => $total
+            ];
+        }
+            $view->showUserHeader($isLogged);
+            $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $deliveryData, $userReview);
     }
 
     /**

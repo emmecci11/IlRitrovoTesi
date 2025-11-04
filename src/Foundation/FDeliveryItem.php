@@ -43,6 +43,31 @@ class FDeliveryItem {
         return $db->delete(self::TABLE_NAME, ['idDeliveryItem' => $idDeliveryItem]);
     }
 
+    /**
+     * Restituisce tutti gli item associati a una specifica prenotazione delivery.
+     *
+     * @param int $idDeliveryReservation
+     * @return EDeliveryItem[] Array di oggetti EDeliveryItem
+     */
+    public static function readAllItemsByReservation(int $idDeliveryReservation): array {
+        $db = FDatabase::getInstance();
+        $rows = $db->fetchDeliveryItemsByReservation($idDeliveryReservation);
+        $items = [];
+
+        foreach ($rows as $row) {
+            $item = new \Entity\EDeliveryItem(
+                $row['idDeliveryItem'],
+                $row['idDeliveryReservation'],
+                $row['idProduct'],
+                $row['quantity'],
+                $row['subtotal']
+            );
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
     public function readAll(): array {
         try {
             $db = FDatabase::getInstance();
