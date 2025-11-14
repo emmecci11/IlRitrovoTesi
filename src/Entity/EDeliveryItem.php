@@ -1,54 +1,61 @@
+
 <?php
 
 namespace Entity;
 
-use Entity\EProduct;
 use JsonSerializable;
+use DateTime;
 
 /**
  * Class EDeliveryItem
  */
 class EDeliveryItem implements JsonSerializable {
     /**
-     * @var int ID dell'item di consegna
+     * @var ?int ID dell'item di consegna
      */
     private ?int $idDeliveryItem;
 
     /**
-     * @var int ID della prenotazione di consegna
+     * @var EDeliveryReservation La prenotazione di consegna associata all'item.
      */
-    protected int $idDeliveryReservation;
+    protected EDeliveryReservation $reservation;
 
     /**
-     * @var int ID del prodotto (relazionato con EProduct)
+     * @var EProduct Il prodotto associato all'item.
      */
-    private int $idProduct;
+    protected EProduct $product;
 
     /**
-     * @var float Quantità dell'item di consegna
+     * @var int Quantità dell'item nella prenotazione.
      */
     private int $quantity;
 
     /**
-     * @var float Totale dell'item di consegna
+     * @var float Subtotale dell'item (price * quantity).
      */
-    protected float $subtotal;
+    private float $subtotal;
 
     /**
      * Costruttore.
      *
      * @param ?int   $idDeliveryItem  ID dell'item di consegna
-     * @param int   $idDeliveryReservation  ID della prenotazione di consegna
-     * @param int   $idProduct      ID del prodotto (relazionato con EProduct)
-     * @param int $quantity       Quantità dell'item di consegna
-     * @param float $subtotal       Totale dell'item di consegna
+     * @param EDeliveryReservation $reservation La prenotazione di consegna associata all'item
+     * @param EProduct        $product       Il prodotto associato all'item
+     * @param int          $quantity      Quantità dell'item nella prenotazione
      */
-    public function __construct(?int $idDeliveryItem, int $idDeliveryReservation, int $idProduct, int $quantity, float $subtotal) {
+    public function __construct(
+        ?int $idDeliveryItem,
+        EDeliveryReservation $reservation,
+        EProduct $product,
+        int $quantity
+    ) {
         $this->setIdDeliveryItem($idDeliveryItem);
-        $this->setIdDeliveryReservation($idDeliveryReservation);
-        $this->setIdProduct($idProduct);
+        $this->setReservation($reservation);
+        $this->setProduct($product);
         $this->setQuantity($quantity);
-        $this->setSubtotal($subtotal);
+
+        // Calcola il subtotal automaticamente
+        $this->subtotal = $product->getPriceProduct() * $quantity;
     }
 
     /**
@@ -70,72 +77,75 @@ class EDeliveryItem implements JsonSerializable {
     }
 
     /**
-     * Ottieni l'ID della prenotazione di consegna.
+     * Ottieni la prenotazione di consegna associata all'item.
      *
-     * @return int ID della prenotazione di consegna
+     * @return EDeliveryReservation La prenotazione di consegna associata all'item
      */
-    public function getIdDeliveryReservation(): int {
-        return $this->idDeliveryReservation;
+    public function getReservation(): EDeliveryReservation {
+        return $this->reservation;
     }
 
     /**
-     * Imposta l'ID della prenotazione di consegna.
+     * Imposta la prenotazione di consegna associata all'item.
      *
-     * @param int   $idDeliveryReservation  ID della prenotazione di consegna
+     * @param EDeliveryReservation $reservation La prenotazione di consegna da associare all'item
      */
-    public function setIdDeliveryReservation(int $idDeliveryReservation): void {
-        $this->idDeliveryReservation = $idDeliveryReservation;
+    public function setReservation(EDeliveryReservation $reservation): void {
+        $this->reservation = $reservation;
     }
 
     /**
-     * Ottieni l'ID del prodotto (relazionato con EProduct).
+     * Ottieni il prodotto associato all'item.
      *
-     * @return int ID del prodotto
+     * @return EProduct Il prodotto associato all'item
      */
-    public function getIdProduct(): int {
-        return $this->idProduct;
+    public function getProduct(): EProduct {
+        return $this->product;
     }
 
     /**
-     * Imposta l'ID del prodotto (relazionato con EProduct).
+     * Imposta il prodotto associato all'item.
      *
-     * @param int   $idProduct  ID del prodotto
+     * @param EProduct $product Il prodotto da associare all'item
      */
-    public function setIdProduct(int $idProduct): void {
-        $this->idProduct = $idProduct;
+    public function setProduct(EProduct $product): void {
+        $this->product = $product;
     }
 
     /**
-     * Ottieni la quantità dell'item di consegna.
+     * Ottieni la quantità dell'item nella prenotazione.
      *
-     * @return float Quantità dell'item di consegna
+     * @return int Quantità dell'item nella prenotazione
      */
     public function getQuantity(): int {
         return $this->quantity;
     }
 
     /**
-     * Imposta la quantità dell'item di consegna.
+     * Imposta la quantità dell'item nella prenotazione.
      *
-     * @param float $quantity  Quantità dell'item di consegna
+     * @param int $quantity La quantità da impostare
      */
     public function setQuantity(int $quantity): void {
         $this->quantity = $quantity;
+
+        // Ricalcola il subtotal automaticamente
+        $this->subtotal = $this->product->getPriceProduct() * $quantity;
     }
 
     /**
-     * Ottieni il totale dell'item di consegna.
+     * Ottieni il subtotale dell'item (price * quantity).
      *
-     * @return float Totale dell'item di consegna
+     * @return float Subtotale dell'item
      */
     public function getSubtotal(): float {
         return $this->subtotal;
     }
 
     /**
-     * Imposta il totale dell'item di consegna.
+     * Imposta il subtotale dell'item (price * quantity).
      *
-     * @param float $subtotal  Totale dell'item di consegna
+     * @param float $subtotal Il subtotale da impostare
      */
     public function setSubtotal(float $subtotal): void {
         $this->subtotal = $subtotal;
@@ -149,10 +159,10 @@ class EDeliveryItem implements JsonSerializable {
     public function jsonSerialize(): array {
         return [
             'idDeliveryItem' => $this->idDeliveryItem,
-            'idDeliveryReservation' => $this->idDeliveryReservation,
-            'idProduct'      => $this->idProduct,
-            'quantity'       => $this->quantity,
-            'subtotal'       => $this->subtotal,
+            'reservation'   => $this->getReservation()->getIdDeliveryReservation(),
+            'product'       => $this->getProduct()->jsonSerialize(),
+            'quantity'      => $this->quantity,
+            'subtotal'      => $this->subtotal,
         ];
     }
 }

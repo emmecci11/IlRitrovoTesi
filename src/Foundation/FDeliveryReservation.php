@@ -3,7 +3,9 @@ namespace Foundation;
 
 use Entity\EDeliveryReservation;
 use DateTime;
+use Entity\EReservation;
 use Exception;
+use Smarty\Data;
 
 /**
  * Class FDeliveryReservation to manage Delivery Reservations in the database.
@@ -39,33 +41,54 @@ class FDeliveryReservation {
      * @throws Exception If there is an error during the create operation.
      */
     public function create(EDeliveryReservation $deliveryReservation): int {
+        // Ottieni l'ID dell'utente dall'oggetto EDeliveryReservation
+        $idUtente = $deliveryReservation->getUser()->getIdUser();
+
         $db = FDatabase::getInstance();
-        $data = $this->entityToArray($deliveryReservation);
-        self::validateDeliveryReservationData($data, $deliveryReservation->getIdUser());
         try {
-            // Delivery Reservation insertion
+            // --- CORREZIONE 1: AVVIA LA TRANSAZIONE ---
+            $db->beginTransaction();
+
+            // Salva i dati della deliveryReservation
+            $data = $this->entityToArray($deliveryReservation);
+            self::validateDeliveryReservationData($data, $idUtente);
             $result = $db->insert(self::TABLE_NAME, $data);
+
             if ($result === null) {
                 throw new Exception(self::ERR_INSERTION_FAILED);
             }
-            // Retrieve the last inserted ID
-            $createdId=$db->getLastInsertedId();
-            if ($createdId==null) {
+
+            // Retrieve the last inserted ID and assign it to the object
+            $createdId = $db->getLastInsertedId();
+            if ($createdId === null) {
                 throw new Exception(self::ERR_MISSING_ID);
             }
-            // Retrive the inserted delivery reservation by number to get the assigned idDeliveryReservation
-            $storedDeliveryReservation = $db->load(self::TABLE_NAME, 'idDeliveryReservation', $createdId);
-            if ($storedDeliveryReservation === null) {
-                throw new Exception(self::ERR_RETRIVE_DELIVERY_RESERVATION);
-            }
-            // Assign the retrieved ID to the object
             $deliveryReservation->setIdDeliveryReservation((int)$createdId);
-            // Return the id associated with this delivery reservation
-            return (int)$createdId;
+
+            // --- CORREZIONE 2: CREA L'ISTANZA FUORI DAL LOOP ---
+            $fItem = new FDeliveryItem();
+
+            // Salva gli Item nella tabella deliveryitem
+            $items = $deliveryReservation->getItems();
+            foreach ($items as $itemObject) {
+                // Imposta il "padre" dell'item (la prenotazione)
+                $itemObject->setReservation($deliveryReservation);
+                
+                // Crea e salva l'item (riutilizzando $fItem)
+                $fItem->create($itemObject);
+            }
+
+            // Conferma la transazione
+            $db->commit();
+
+            return (int)$createdId; // Ritorna l'ID della prenotazione, non il risultato dell'insert
+
         } catch (Exception $e) {
+            // Se si verifica un errore, rollback della transazione
+            $db->rollback();
             throw $e;
         }
-    }
+}
 
     /**
      * Reads a specific Delivery Reservation from the database by ID.
@@ -115,18 +138,27 @@ class FDeliveryReservation {
      */
     public static function readAllDeliveryByUser(int $idUser): array {
         $db = FDatabase::getInstance();
+        $fUser=new FUser();
+        $userObject=$fUser->read($idUser);
+
+        if($userObject===null) {
+            return [];
+        }
+    
         $rows = $db->fetchDeliveryReservationsByUser($idUser);
-        $reservations = [];
-        foreach ($rows as $row) {
-            $reservation = new \Entity\EDeliveryReservation(
-                $row['idDeliveryReservation'],
-                $row['idUser'],
+        $reservations=[];
+
+        foreach($rows as $row) {
+            $reservation=new EDeliveryReservation(
+                (int)$row['idDeliveryReservation'],
+                $userObject,
                 $row['userPhone'],
                 $row['userAddress'],
                 $row['userNumberAddress'],
-                new \DateTime($row['wishedTime'])
+                new DateTime($row['wishedTime']),
+                []
             );
-            $reservations[] = $reservation;
+            $reservations[]=$reservation;
         }
         return $reservations;
     }
@@ -200,13 +232,20 @@ class FDeliveryReservation {
      * @throws Exception If required fields are missing.
      */
     public function arrayToEntity(array $data): EDeliveryReservation {
+        //Legge l'ID dell'utente da $data
+        $idUser=$data['idUser'];
+
+        //Ottiene l'oggetto utente completo da FUser
+        $fUser=new FUser();
+        $userObject=$fUser->read($idUser);
         return new EDeliveryReservation(
             isset($data['idDeliveryReservation']) ? (int)$data['idDeliveryReservation'] : null,
-            isset($data['idUser']) ? (int)$data['idUser'] : null,
+            $userObject,
             $data['userPhone'],
             $data['userAddress'],
             $data['userNumberAddress'],
-            new DateTime($data['wishedTime'])
+            new DateTime($data['wishedTime']),
+            []
         );
     }
 
@@ -219,7 +258,7 @@ class FDeliveryReservation {
     public function entityToArray(EDeliveryReservation $deliveryReservation): array {
         return [
             'idDeliveryReservation' => $deliveryReservation->getIdDeliveryReservation(),
-            'idUser' => $deliveryReservation->getIdUser(),
+            'idUser' => $deliveryReservation->getUser()->getIdUser(),
             'userPhone' => $deliveryReservation->getUserPhone(),
             'userAddress' => $deliveryReservation->getUserAddress(),
             'userNumberAddress' => $deliveryReservation->getUserNumberAddress(),

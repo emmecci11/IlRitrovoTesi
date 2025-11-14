@@ -82,6 +82,45 @@ use Exception;
     }
 
     /**
+     * Legge una prenotazione di consegna completa per un id.
+     *
+     * @param int $idReservation ID della prenotazione
+     * @return EDeliveryReservation|null Oggetto prenotazione completa o null se non trovata
+     */
+    public function readCompleteDeliveryReservation(int $idReservation): ?EDeliveryReservation {
+        // Carica l'oggetto EDeliveryReservation "padre" con gli items vuoti
+        $reservationObject = $this->read($idReservation, \Foundation\FDeliveryReservation::class);
+        // Verifica se l'oggetto è null
+        if ($reservationObject === null) {
+            return null;
+        }
+        // Carica gli "item figli"
+        $items = FDeliveryItem::readAllItemsByReservation($reservationObject->getIdDeliveryReservation());
+        // Cucire gli item nell'oggetto padre
+        $reservationObject->setItems($items);
+        // Restituisci l'oggetto prenotazione completo
+        return $reservationObject;
+    }
+
+    /**
+     * Legge tutte le prenotazioni di consegna complete per un utente.
+     *
+     * @param int $idUser ID dell'utente
+     * @return EDeliveryReservation[] Array di prenotazioni di consegna completi
+     */
+    public function readCompleteDeliveryReservationsByUser(int $idUser): array {
+        // Ottieni tutte le prenotazioni di consegna per l'utente specificato
+        $reservations = FDeliveryReservation::readAllDeliveryByUser($idUser);
+        // Cicla su ogni prenotazione e carica i suoi item
+        foreach ($reservations as &$res) {
+            $items = FDeliveryItem::readAllItemsByReservation($res->getIdDeliveryReservation());
+            $res->setItems($items);
+        }
+        // Restituisci l'array di prenotazioni complete
+        return $reservations;
+    }
+
+    /**
      * 
      */
     public function readExtrasInReservation(object $obj, string $fClass) {

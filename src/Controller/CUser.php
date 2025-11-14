@@ -16,6 +16,7 @@ use Foundation\FReply;
 use Foundation\FReservation;
 use Foundation\FReview;
 use Foundation\FUser;
+use Controller\CDelivery;
 use View\VError;
 use View\VUser;
 use Utility\UCookies;
@@ -109,46 +110,10 @@ class CUser {
             $reply=FPersistentManager::getInstance()->read($userReview->getIdReply(), FReply::class);
             $userReview->setReply($reply);
         }
-        // === DELIVERY ORDERS ===
-        $userDeliveryReservations = FPersistentManager::getInstance()->readAllDeliveryByUser($idUser, FDeliveryReservation::class) ?? [];
-        $deliveryData = []; // array associativo per il tpl
-
-        foreach ($userDeliveryReservations as $delivery) {
-            $idDeliveryReservation = $delivery->getIdDeliveryReservation();
-
-            // Leggi tutti gli item associati
-            $items = FPersistentManager::getInstance()->readAllItemsByReservation($idDeliveryReservation, FDeliveryItem::class);
-
-            $total = 0;
-            $itemDetails = [];
-
-            foreach ($items as $item) {
-                // Recupera nome e prezzo del prodotto
-                $product = FPersistentManager::getInstance()->read($item->getIdProduct(), FProduct::class);
-                $nameProduct = $product->getNameProduct();
-                $quantity = $item->getQuantity();
-                $subtotal = $item->getSubtotal();
-                $total += $subtotal;
-
-                $itemDetails[] = [
-                    'name' => $nameProduct,
-                    'quantity' => $quantity,
-                    'subtotal' => $subtotal
-                ];
-            }
-
-            // compila dati riepilogo
-            $deliveryData[] = [
-                'userPhone' => $delivery->getUserPhone(),
-                'userAddress' => $delivery->getUserAddress(),
-                'userNumberAddress' => $delivery->getUserNumberAddress(),
-                'wishedTime' => $delivery->getWishedTime(),
-                'items' => $itemDetails,
-                'total' => $total
-            ];
-        }
-            $view->showUserHeader($isLogged);
-            $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $deliveryData, $userReview);
+        //Ottengo tutte le prenotazioni di tipo delivery
+        $deliveryData=CDelivery::getDeliveryReservationModel();
+        $view->showUserHeader($isLogged);
+        $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $deliveryData, $userReview);
     }
 
     /**

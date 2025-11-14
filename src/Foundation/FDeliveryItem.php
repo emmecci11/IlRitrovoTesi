@@ -45,26 +45,55 @@ class FDeliveryItem {
 
     /**
      * Restituisce tutti gli item associati a una specifica prenotazione delivery.
+     * (Versione corretta con idratazione Eager)
      *
      * @param int $idDeliveryReservation
      * @return EDeliveryItem[] Array di oggetti EDeliveryItem
      */
     public static function readAllItemsByReservation(int $idDeliveryReservation): array {
+        // 1. IDRATA IL "PADRE" (La prenotazione) - 1 Query
+        // (Dobbiamo usare le classi Foundation)
+        $fReservation = new \Foundation\FDeliveryReservation();
+        $reservationObject = $fReservation->read($idDeliveryReservation);
+        if ($reservationObject === null) {
+            // Se la prenotazione non esiste, non ci sono item
+            return [];
+        }
+        // 2. CARICA I DATI GREZZI (I figli) - 1 Query
         $db = FDatabase::getInstance();
         $rows = $db->fetchDeliveryItemsByReservation($idDeliveryReservation);
-        $items = [];
-
-        foreach ($rows as $row) {
-            $item = new \Entity\EDeliveryItem(
-                $row['idDeliveryItem'],
-                $row['idDeliveryReservation'],
-                $row['idProduct'],
-                $row['quantity'],
-                $row['subtotal']
-            );
-            $items[] = $item;
+        if (empty($rows)) {
+            return [];
         }
-
+        // 3. IDRATA I "NIPOTI" (I prodotti) in modo EFFICIENTE (No N+1)
+        // Estrai tutti gli idProduct unici
+        $productIds = array_unique(array_column($rows, 'idProduct'));
+        // Carica tutti i prodotti necessari in 1 sola Query
+        $fProduct = new \Foundation\FProduct();
+        $productMap = [];
+        foreach ($productIds as $id) {
+            $prodObj = $fProduct->read((int)$id);
+            if ($prodObj !== null) {
+                $productMap[$id] = $prodObj;
+            }
+        }
+        // 4. ASSEMBLA GLI OGGETTI IN RAM (0 Query)
+        $items = [];
+        foreach ($rows as $row) {
+            $productId = (int)$row['idProduct'];
+            // Controlla se il prodotto è stato caricato correttamente
+            if (isset($productMap[$productId])) {
+                $productObject = $productMap[$productId];
+                // Ora chiamiamo il costruttore CORRETTO
+                $item = new \Entity\EDeliveryItem(
+                    (int)$row['idDeliveryItem'],
+                    $reservationObject, // <-- Oggetto Prenotazione
+                    $productObject,     // <-- Oggetto Prodotto
+                    (int)$row['quantity']
+                );
+                $items[] = $item;
+            }
+        }
         return $items;
     }
 
@@ -102,20 +131,33 @@ class FDeliveryItem {
     }
 
     public function arrayToEntity(array $data): EDeliveryItem {
+        //Recupero gli id dall'array di parametro
+        $idProduct=isset($data['idProduct']) ? (int)$data['idProduct']: null;
+        $idDeliveryReservation=isset($data['idDeliveryReservation']) ? (int)$data['idDeliveryReservation']: null;
+        //Grazie agli id prelevo dal db e idrato gli oggetti
+        $fProduct=new FProduct();
+        $productObject=$fProduct->read($idProduct);
+        $fDeliveryReservation=new FDeliveryReservation();
+        $reservationDeliveryObject=$fDeliveryReservation->read($idDeliveryReservation);
+        //Controlli
+        if($productObject===null || $reservationDeliveryObject===null) {
+            throw new Exception("Impossibile idratare EDeliveryItem: dipendenza mancante");
+        }
+
+        //Return new istance
         return new EDeliveryItem(
-            (int)($data['idDeliveryItem'] ?? 0),
-            (int)$data['idDeliveryReservation'],
-            (int)$data['idProduct'],
-            (float)$data['quantity'],
-            (float)($data['subtotal'] ?? 0)
+            isset($data['idDeliveryItem']) ? (int)$data['idDeliveryItem'] : null,
+            $reservationDeliveryObject,
+            $productObject,
+            (int)$data['quantity']
         );
     }
 
     public function entityToArray(EDeliveryItem $deliveryItem): array {
         return [
             'idDeliveryItem' => $deliveryItem->getIdDeliveryItem(),
-            'idDeliveryReservation' => $deliveryItem->getIdDeliveryReservation(),
-            'idProduct' => $deliveryItem->getIdProduct(),
+            'idDeliveryReservation' => $deliveryItem->getReservation()->getIdDeliveryReservation(),
+            'idProduct' => $deliveryItem->getProduct()->getIdProduct(),
             'quantity' => $deliveryItem->getQuantity(),
             'subtotal' => $deliveryItem->getSubtotal()
         ];

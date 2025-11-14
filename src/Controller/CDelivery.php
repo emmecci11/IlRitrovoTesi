@@ -4,27 +4,19 @@ namespace Controller;
 
 use DateTime;
 use Exception;
-use Entity\EProduct;
 use Entity\EPayment;
 
 use Entity\EDeliveryItem;
 use Entity\EDeliveryReservation;
-use Entity\EUser;
-use Entity\Role;
 use Entity\StatoPagamento;
 use Foundation\FCreditCard;
-use Foundation\FProduct;
 use Foundation\FDeliveryItem;
 use Foundation\FDeliveryReservation;
+use Foundation\FProduct;
 use Foundation\FPersistentManager;
-use Foundation\FReply;
-use Foundation\FReservation;
-use Foundation\FReview;
 use Foundation\FUser;
 use View\VDelivery;
-use View\VError;
 use View\VUser;
-use Utility\UCookies;
 use Utility\UHTTPMethods;
 use Utility\USessions;
 
@@ -169,5 +161,59 @@ public function showPaymentMethod() {
         $session->deleteValue('deliveryReservation');
         $viewU->showUserHeader($isLogged);
         $viewD->confirmedOrder();
+    }
+
+    /**
+     * Function to show get a delivery order, getting a format to send for a tpl model (email and reservations)
+     */
+    public static function getDeliveryReservationModel(): array {
+        // === DELIVERY ORDERS ===
+        $session = USessions::getIstance();
+        $idUser = $session->readValue('idUser');
+        $userDeliveryReservations = FPersistentManager::getInstance()->readAllDeliveryByUser($idUser, FDeliveryReservation::class) ?? [];
+        $deliveryData = [];
+        foreach ($userDeliveryReservations as $delivery) {
+            $idDeliveryReservation = $delivery->getIdDeliveryReservation();
+            // Leggi tutti gli item associati
+            $items = FPersistentManager::getInstance()->readAllItemsByReservation($idDeliveryReservation, FDeliveryItem::class) ?? [];
+            $total = 0.0;
+            $itemDetails = [];
+            foreach ($items as $item) {
+                // Sicurezza: assicurati che l'item abbia getIdProduct() e getSubtotal()
+                $idProduct = $item->getIdProduct();
+                if ($idProduct === null) continue;
+                // Recupera prodotto (può essere null, gestirlo)
+                $product = FPersistentManager::getInstance()->read($idProduct, FProduct::class);
+                if ($product === null) {
+                    // prodotto non trovato: salta o aggiungi un placeholder
+                    $nameProduct = "Unknown product (id: $idProduct)";
+                    $priceProduct = 0.0;
+                } else {
+                    $nameProduct = $product->getNameProduct();
+                    // Normalizza eventuali stringhe con virgola
+                    $priceProduct = (float) str_replace(',', '.', $product->getPriceProduct());
+                }
+                $quantity = intval($item->getQuantity());
+                // Normalizza subtotal letto dall'item (evita stringhe con virgola)
+                $subtotal = (float) str_replace(',', '.', $item->getSubtotal());
+                // Somma correttamente
+                $total += $subtotal;
+                $itemDetails[] = [
+                    'name' => $nameProduct,
+                    'quantity' => $quantity,
+                    'subtotal' => $subtotal,
+                    'unit_price' => $priceProduct
+                ];
+            }
+            $deliveryData[] = [
+                'userPhone' => $delivery->getUserPhone(),
+                'userAddress' => $delivery->getUserAddress(),
+                'userNumberAddress' => $delivery->getUserNumberAddress(),
+                'wishedTime' => $delivery->getWishedTime(),
+                'items' => $itemDetails,
+                'total' => $total
+            ];
+        }
+        return $deliveryData;
     }
 }

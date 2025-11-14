@@ -1,3 +1,4 @@
+
 <?php
 
 namespace Entity;
@@ -15,9 +16,14 @@ class EDeliveryReservation implements JsonSerializable {
     private ?int $idDeliveryReservation;
 
     /**
-     * @var int ID dell utente
+     * @var EUser L'utente associato alla prenotazione di consegna.
      */
-    protected int $idUser;
+    protected EUser $user;
+
+    /**
+     * @var array Prodotti nella prenotazione di consegna.
+     */
+    private array $items = [];
 
     /**
      * @var string Numero di telefono dell utente
@@ -42,20 +48,30 @@ class EDeliveryReservation implements JsonSerializable {
     /**
      * Costruttore.
      *
-     * @param ?int   $idDeliveryreservation  ID della prenotazione di consegna
-     * @param int   $idUser          ID dell utente
-     * @param string $userPhone      Numero di telefono dell utente
-     * @param string $userAddress    Indirizzo dell utente
-     * @param int   $userNumberAddress  N. indirizzo dell utente (in base a un sistema di codice postale)
+     * @param ?int   $idDeliveryReservation  ID della prenotazione di consegna
+     * @param EUser    $user            L'utente associato alla prenotazione di consegna
+     * @param array     $items           Prodotti nella prenotazione di consegna
+     * @param string   $userPhone      Numero di telefono dell utente
+     * @param string   $userAddress    Indirizzo dell utente
+     * @param int      $userNumberAddress  N. indirizzo dell utente (in base a un sistema di codice postale)
      * @param DateTime $wishedTime     Ora desiderata per la consegna
      */
-    public function __construct(?int $idDeliveryReservation, int $idUser, string $userPhone, string $userAddress, int $userNumberAddress, DateTime $wishedTime) {
+    public function __construct(
+        ?int $idDeliveryReservation,
+        EUser $user,
+        string $userPhone,
+        string $userAddress,
+        int $userNumberAddress,
+        DateTime $wishedTime,
+        array $items = []
+    ) {
         $this->setIdDeliveryReservation($idDeliveryReservation);
-        $this->setIdUser($idUser);
+        $this->setUser($user);
         $this->setUserPhone($userPhone);
         $this->setUserAddress($userAddress);
         $this->setUserNumberAddress($userNumberAddress);
         $this->setWishedTime($wishedTime);
+        $this->setItems($items);
     }
 
     /**
@@ -70,28 +86,64 @@ class EDeliveryReservation implements JsonSerializable {
     /**
      * Imposta l'ID della prenotazione di consegna.
      *
-     * @param int   $idDeliveryreservation  ID della prenotazione di consegna
+     * @param int   $idDeliveryReservation  ID della prenotazione di consegna
      */
     public function setIdDeliveryReservation(?int $idDeliveryReservation): void {
         $this->idDeliveryReservation = $idDeliveryReservation;
     }
 
     /**
-     * Ottieni l'ID dell utente.
+     * Ottieni l'utente associato alla prenotazione di consegna.
      *
-     * @return int ID dell utente
+     * @return EUser L'utente associato alla prenotazione di consegna
      */
-    public function getIdUser(): int {
-        return $this->idUser;
+    public function getUser(): EUser {
+        return $this->user;
     }
 
     /**
-     * Imposta l'ID dell utente.
+     * Imposta l'utente associato alla prenotazione di consegna.
      *
-     * @param int   $idUser  ID dell utente
+     * @param EUser $user L'utente da associare alla prenotazione di consegna
      */
-    public function setIdUser(int $idUser): void {
-        $this->idUser = $idUser;
+    public function setUser(EUser $user): void {
+        $this->user = $user;
+    }
+
+    /**
+     * Ottieni i prodotti nella prenotazione di consegna.
+     *
+     * @return array Prodotti nella prenotazione di consegna
+     */
+    public function getItems(): array {
+        return $this->items;
+    }
+
+    /**
+     * Imposta i prodotti nella prenotazione di consegna.
+     *
+     * @param array $items Array dei prodotti da associare alla prenotazione di consegna
+     */
+    public function setItems(array $items): void {
+        $this->items = $items;
+    }
+
+    /**
+     * Aggiungi un prodotto alla prenotazione di consegna.
+     *
+     * @param EDeliveryItem $item Il prodotto da aggiungere alla prenotazione di consegna
+     */
+    public function addItem(EDeliveryItem $item): void {
+        $this->items[] = $item;
+    }
+
+    /**
+     * Rimuovi un prodotto dalla prenotazione di consegna.
+     *
+     * @param EDeliveryItem $item Il prodotto da rimuovere dalla prenotazione di consegna
+     */
+    public function removeItem(EDeliveryItem $item): void {
+        $this->items = array_filter($this->items, fn ($i) => $i !== $item);
     }
 
     /**
@@ -174,7 +226,8 @@ class EDeliveryReservation implements JsonSerializable {
     public function jsonSerialize(): array {
         return [
             'idDeliveryReservation' => $this->idDeliveryReservation,
-            'idUser'          => $this->idUser,
+            'user'             => $this->getUser()->jsonSerialize(),
+            'items'           => array_map(fn ($item) => $item->jsonSerialize(), $this->getItems()),
             'userPhone'      => $this->userPhone,
             'userAddress'    => $this->userAddress,
             'userNumberAddress' => $this->userNumberAddress,

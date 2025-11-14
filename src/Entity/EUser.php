@@ -62,6 +62,11 @@ class EUser implements JsonSerializable {
     private array $creditCards;
 
     /**
+     * @var array deliveryReservations
+     */
+    private array $deliveryReservations;
+
+    /**
      * PERSONAL_INFORMARTION 
      * @var string First name of the user. 
      */
@@ -100,7 +105,7 @@ class EUser implements JsonSerializable {
      * @param string $surname Last name of the user
      * @param DateTime $birthDate User's date of birth
      * @param string $phone User's phone number
-     * @var Role $role descrive the role of the person
+     * @param Role $role descrive the role of the person
      */
     public function __construct(
         ?int $idUser,
@@ -123,6 +128,7 @@ class EUser implements JsonSerializable {
         $this->ban = $ban;
         $this->reservations = [];
         $this->creditCards = [];
+        $this->deliveryReservations = [];
         $this->name = $name;
         $this->surname = $surname;
         $this->birthDate = $birthDate;
@@ -327,6 +333,29 @@ class EUser implements JsonSerializable {
      */
     public function hasCreditCard(): bool {
         return $this->isUser() && !empty($this->creditCards);
+    }
+
+    /**
+     * Get the array deliveryReservations
+     */
+    public function getDeliveryReservations() {
+        return $this->deliveryReservations;
+    }
+
+    /**
+     * Add a new EDeliveryReservation to the user's delivery reservations
+     */
+    public function addDeliveryReservations(EDeliveryReservation $deliveryReservation): void {
+        $this->deliveryReservations[] = $deliveryReservation;
+    }
+
+    /**
+     * Removes a delivery reservation from 
+     * 
+     * @param EDeliveryReservation $deliveryReservation The reservation to delete
+     */
+    public function removeDeliveryReservation(): void {
+
     }
 
     /**
