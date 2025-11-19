@@ -182,9 +182,9 @@ class FDeliveryReservation {
      */
     public static function validateDeliveryReservationData(array $data, ?int $currentId=null): void {
     // Validazione campi obbligatori esistenti
-        if (!isset($data['idDeliveryReservation']) || !is_int($data['idDeliveryReservation'])) {
+        if (isset($data['idDeliveryReservation']) && !is_int($data['idDeliveryReservation'])) {
             throw new Exception(self::ERR_ID_DELIVERY_RESERVATION);
-        }  
+        }
         if (!isset($data['idUser']) || !is_int($data['idUser'])) {
             throw new Exception(self::ERR_USER_ID);
         } elseif (!FUser::exists((string)$data['idUser'])) {
@@ -265,5 +265,4 @@ class FDeliveryReservation {
             'wishedTime' => $deliveryReservation->getWishedTime()->format('Y-m-d H:i:s')
         ];
     }
-
 }

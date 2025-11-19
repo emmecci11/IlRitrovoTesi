@@ -17,22 +17,17 @@ class VDelivery {
         $smarty->display('deliveryReservationMenu.tpl');
     }
 
-    public function showDeliveryUserInfo() {
+    public function showUserInfoPage() {
         $smarty=new USmartyConfig();
         $smarty->display('deliveryUserInfo.tpl');
     }
 
-    public function showPaymentMethod(array $orderProducts, array $userCreditCards, float $totalPrice) {
+    public function showDeliveryPayment($reservation, array $creditCards) {
         $smarty = new USmartyConfig();
-        $session = USessions::getIstance();
-        $quantities = $session->readValue('quantities');
+        $smarty->assign('reservation', $reservation);
+        $smarty->assign('creditCards', $creditCards);
 
-        $smarty->assign('orderProducts', $orderProducts);
-        $smarty->assign('userCreditCards', $userCreditCards);
-        $smarty->assign('totalPrice', $totalPrice);
-        $smarty->assign('quantities', $quantities);
-
-        $smarty->display('deliveryPaymentMethodAndSummarize.tpl');
+        $smarty->display('deliveryPayment.tpl');
     }
 
     public function confirmedOrder() {

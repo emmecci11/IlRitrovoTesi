@@ -43,177 +43,185 @@ class CDelivery {
     }
 
     /**
-     * Function to show user info's form to create a Delivery Reservation
+     * Function to process POST request. Starting PRG pattern to avoid douplicated objects in RAM.
      */
-    public function showUserInfo() {
-        $viewU=new VUser();
-        $viewD=new VDelivery();
-        $session=USessions::getIstance();
+    public function processMenu() {
+        // --- CORREZIONE 1: Gestione Sessione ---
+        $session = USessions::getIstance();
         $session->startSession();
         if($isLogged=CUser::isLogged()) {
             $idUser=$session->readValue('idUser');
         }
-        $productIds = UHTTPMethods::post('product_ids');
-        $quantities = UHTTPMethods::post('quantities'); 
-		$subtotal=0;
-        //Calcolo il totale dell'ordine
-        foreach ($productIds as $id) {
-        	$product = FPersistentManager::getInstance()->read($id, FProduct::class);
-            $quantity = $quantities[$id];
-            $singlePrice = $product->getPriceProduct() * $quantity;
-            $subtotal+=$singlePrice;
-            }
-        $session->setValue('product_ids', $productIds);
-        $session->setValue('quantities', $quantities);
-		$session->setValue('subtotal', $subtotal);
-
-        $viewU->showUserHeader($isLogged);
-        $viewD->showDeliveryUserInfo();
-    }
-
-    /**
-     * Function to summarize Delivery Reservation choises and show Payment Methodes
-     */
-public function showPaymentMethod() {
-    $viewU = new VUser();
-    $viewD = new VDelivery();
-    $session = USessions::getIstance();
-    $session->startSession();
-    // Verifica login utente
-    $isLogged = CUser::isLogged();
-    if ($isLogged) {
-        $idUser = $session->readValue('idUser');
-    }
-    // Recupero dati dalla POST (inviati dal form utente)
-    $phone = UHTTPMethods::post('phone');
-    $address = UHTTPMethods::post('address');
-    $streetNumber = UHTTPMethods::post('streetNumber');
-    $dateTime = UHTTPMethods::post('dateTime');
-    // Creo un oggetto EDeliveryReservation con i dati della spedizione
-    $deliveryReservation = new EDeliveryReservation(null, $idUser, $phone, $address, (int)$streetNumber, new DateTime($dateTime));
-    // Salvo in sessione i dati dell’utente per eventuale conferma successiva
-    $session->setValue('deliveryReservation', $deliveryReservation); 
-    // Recupero i dati dell'ordine dalla sessione
-    $productIds = $session->readValue('product_ids');
-    $quantities = $session->readValue('quantities');
-    $totalPrice = $session->readValue('subtotal');
-    // Ricostruisco i prodotti dal DB
-    $orderProducts = [];
-    foreach ($productIds as $id) {
-        $product = FPersistentManager::getInstance()->read($id, FProduct::class);
-        if ($product !== null) {
-            $orderProducts[] = $product;  // <-- qui passiamo proprio l'oggetto
-        }
-    }
-    // Recupero le carte di credito dell’utente per mostrarle nel riepilogo/pagamento
-    $userCreditCards = FPersistentManager::getInstance()->readCreditCardsByUser($idUser, FCreditCard::class);
-    // Passo tutto alla View
-    $viewU->showUserHeader($isLogged);
-    $viewD->showPaymentMethod($orderProducts, $userCreditCards, $totalPrice);
-    }
-
-    /**
-     * Function to Confirme the Delivery Reservation, verify Payment and redirect user to Home Page
-     */
-    public function showConfirmedOrder() {
-        $viewU = new VUser();
-        $viewD = new VDelivery();
-        $session = USessions::getIstance();
-        $session->startSession();
-        $isLogged = CUser::isLogged();
-        if ($isLogged) {
-            $idUser = $session->readValue('idUser');
-        }
-        $deliveryReservation = $session->readValue('deliveryReservation');
-        $reservationId = FPersistentManager::getInstance()->create($deliveryReservation);
-        $productIds = $session->readValue('product_ids');
-        $quantities = $session->readValue('quantities');
-        $subtotal = $session->readValue('subtotal');
-        $selectedCardId = UHTTPMethods::post('selectedCardId');
-        foreach ($productIds as $idProduct) {
-            $product = FPersistentManager::getInstance()->read($idProduct, FProduct::class);
-            if ($product !== null) {
-                $quantity = $quantities[$idProduct];
-                $price = $product->getPriceProduct();
-                $totalItem = $price * $quantity;
-                $deliveryItem = new EDeliveryItem(
-                    null,                   // id
-                    $reservationId,          // id prenotazione
-                    $idProduct,              // id prodotto
-                    $quantity,
-                    $totalItem
-                );
-                FPersistentManager::getInstance()->create($deliveryItem);
-            }
-        }
-        $payment = new EPayment(
-            null,
-            $selectedCardId,
-            $reservationId,
-            $subtotal,
-            new DateTime(),
-            StatoPagamento::COMPLETATO
-        );
-        FPersistentManager::getInstance()->create($payment);
-        $session->deleteValue('product_ids');
-        $session->deleteValue('quantities');
-        $session->deleteValue('subtotal');
-        $session->deleteValue('deliveryReservation');
-        $viewU->showUserHeader($isLogged);
-        $viewD->confirmedOrder();
-    }
-
-    /**
-     * Function to show get a delivery order, getting a format to send for a tpl model (email and reservations)
-     */
-    public static function getDeliveryReservationModel(): array {
-        // === DELIVERY ORDERS ===
-        $session = USessions::getIstance();
-        $idUser = $session->readValue('idUser');
-        $userDeliveryReservations = FPersistentManager::getInstance()->readAllDeliveryByUser($idUser, FDeliveryReservation::class) ?? [];
-        $deliveryData = [];
-        foreach ($userDeliveryReservations as $delivery) {
-            $idDeliveryReservation = $delivery->getIdDeliveryReservation();
-            // Leggi tutti gli item associati
-            $items = FPersistentManager::getInstance()->readAllItemsByReservation($idDeliveryReservation, FDeliveryItem::class) ?? [];
-            $total = 0.0;
-            $itemDetails = [];
-            foreach ($items as $item) {
-                // Sicurezza: assicurati che l'item abbia getIdProduct() e getSubtotal()
-                $idProduct = $item->getIdProduct();
-                if ($idProduct === null) continue;
-                // Recupera prodotto (può essere null, gestirlo)
-                $product = FPersistentManager::getInstance()->read($idProduct, FProduct::class);
-                if ($product === null) {
-                    // prodotto non trovato: salta o aggiungi un placeholder
-                    $nameProduct = "Unknown product (id: $idProduct)";
-                    $priceProduct = 0.0;
-                } else {
-                    $nameProduct = $product->getNameProduct();
-                    // Normalizza eventuali stringhe con virgola
-                    $priceProduct = (float) str_replace(',', '.', $product->getPriceProduct());
+        // Legge i dati in arrivo usando UHTTPMethods
+        $quantita_ricevute = UHTTPMethods::post('quantita');
+        // Inizializza un array vuoto per il carrello
+        $cart = ['items' => [], 'total' => 0.0];
+        // --- CORREZIONE 2: Uso del PersistentManager ---
+        // Otteniamo l'istanza del PM (il nostro "Chef")
+        $pm = FPersistentManager::getInstance();
+        // Loop su tutti gli idProdotti ricevuti nel POST
+        foreach ($quantita_ricevute as $idProdotto => $quantita) {
+            if ((int)$quantita > 0) {
+                // Usiamo il PM per caricare il prodotto
+                $productObject = $pm->read((int)$idProdotto, FProduct::class);
+                if ($productObject !== null) {
+                    $subtotale = $productObject->getPriceProduct() * (int)$quantita;
+                    $cart['total'] += $subtotale;
+                    $cart['items'][] = [
+                        'id_prodotto' => (int)$idProdotto,
+                        'nome_prodotto' => $productObject->getNameProduct(),
+                        'quantita' => (int)$quantita,
+                        'subtotale' => $subtotale
+                    ];
                 }
-                $quantity = intval($item->getQuantity());
-                // Normalizza subtotal letto dall'item (evita stringhe con virgola)
-                $subtotal = (float) str_replace(',', '.', $item->getSubtotal());
-                // Somma correttamente
-                $total += $subtotal;
-                $itemDetails[] = [
-                    'name' => $nameProduct,
-                    'quantity' => $quantity,
-                    'subtotal' => $subtotal,
-                    'unit_price' => $priceProduct
-                ];
             }
-            $deliveryData[] = [
-                'userPhone' => $delivery->getUserPhone(),
-                'userAddress' => $delivery->getUserAddress(),
-                'userNumberAddress' => $delivery->getUserNumberAddress(),
-                'wishedTime' => $delivery->getWishedTime(),
-                'items' => $itemDetails,
-                'total' => $total
-            ];
         }
-        return $deliveryData;
+        // Salva l'intero array del carrello nella sessione
+        $session->setValue('cart', $cart); 
+        // Utilizza il redirect HTTP 302 (URL pulito corretto)
+        header("Location: /IlRitrovo/public/Delivery/showUserInfoPage");
+        exit;
+    }
+
+    /**
+     * Function to show the user's profile page after successfully completing the delivery process.
+     */
+    public function showUserInfoPage() {
+        $viewU=new VUser();
+        $viewD=new VDelivery();
+        $session = USessions::getIstance();
+        // Check if the user is logged in
+        if ($isLogged=CUser::isLogged()) {
+            $idUser=$session->readValue('idUser');
+        } else {
+            header("Location: /IlRitrovo/public/User/showUserLogin"); exit;
+        }
+        // Retrieve the cart from session
+        $cart = $session->readValue('cart');
+        // Check if the cart is empty and redirect to showDeliveryReservation if true
+        if (empty($cart['items'])) {
+            header("Location: /IlRitrovo/public/Delivery/showDeliveryReservation"); exit;
+        }
+        // Display user's profile page
+        $viewU->showUserHeader($isLogged);
+        $viewD->showUserInfoPage();
+    }
+
+    public function processUserInfo() {
+        // Ottieni l'istanza della sessione
+        $session = USessions::getIstance();
+        // Avvia la sessione se necessario
+        if ($session->isSessionNone()) {
+            $session->startSession();
+        }
+        // Leggere i dati dalla Sessione
+        $idUser = $session->readValue('idUser');
+        $cart = $session->readValue('cart');
+        // Leggere i Dati dal POST
+        $userPhone = UHTTPMethods::post('userPhone');
+        $userAddress = UHTTPMethods::post('userAddress');
+        $userNumberAddress = (int)UHTTPMethods::post('userNumberAddress');
+        // Idratare l'Utente via PM
+        $pm = FPersistentManager::getInstance();
+        $userObject = $pm->read($idUser, \Foundation\FUser::class);
+        // Costruire il "Padre" (in RAM)
+        $reservationObject = new EDeliveryReservation(
+            null,
+            $userObject,
+            $userPhone,
+            $userAddress,
+            $userNumberAddress,
+            new DateTime(),
+            []
+        );
+        // Costruire i "Figli" (in RAM)
+        foreach ($cart['items'] as $item) {
+            $productObject = $pm->read((int)$item['id_prodotto'], \Foundation\FProduct::class);
+            $itemObject = new EDeliveryItem(
+                null,
+                $reservationObject,
+                $productObject,
+                (int)$item['quantita']
+            );
+            // "Cucire" il figlio al padre
+            $reservationObject->addItem($itemObject);
+        }
+        // Salvare in Sessione l'intero $reservationObject
+        $session->setValue('reservation_in_progress', $reservationObject);
+        // PRG (Redirect)
+        header("Location: /IlRitrovo/public/Delivery/showPaymentPage");
+        exit;
+    }
+
+    public function showPaymentPage() {
+
+        $viewU=new VUser();
+        $viewD=new VDelivery();
+        $session = USessions::getIstance();
+        // Check if the user is logged in
+        if ($isLogged=CUser::isLogged()) {
+            $idUser=$session->readValue('idUser');
+        }  
+        // Controllo Sicurezza 1 (Login)
+        if (!isset($idUser)) {
+            header("Location: /IlRitrovo/public/User/login"); 
+            exit;
+        }
+        // Carica Dati 1 (Ordine)
+        $reservationObject = $session->readValue('reservation_in_progress');
+        // Controllo Sicurezza 2 (Flusso)
+        if ($reservationObject === null) {
+            header("Location: /IlRitrovo/public/Delivery/showDeliveryReservation");
+            exit;
+        }
+        // Carica Dati 2 (Carte di credito)
+        $pm = FPersistentManager::getInstance();
+        $creditCards = $pm->readCreditCardsByUser($idUser, \Foundation\FCreditCard::class);
+        // Mostra la Vista
+        $viewU->showUserHeader($isLogged);
+        $viewD->showDeliveryPayment($reservationObject, $creditCards);
+    }
+
+    public function confirmOrder() {
+        
+        $session = USessions::getIstance();
+        // Avvia la sessione se necessario
+        if ($session->isSessionNone()) {
+            $session->startSession();
+        }
+        $idUser = $session->readValue('idUser');
+        $reservationObject = $session->readValue('reservation_in_progress');
+        // Se non sei loggato o non hai un ordine in corso, vai via
+        if (!isset($idUser) || !isset($reservationObject)) {
+            header("Location: /IlRitrovo/public/User/showUserLogin");
+            exit;
+        }      
+        // Leggo l'ID della carta credito dal POST
+        $idCreditCard = (int)UHTTPMethods::post('id_carta_credito');       
+        // Ottenere il PM
+        $pm = FPersistentManager::getInstance();       
+        // Salvare la Prenotazione (Padre e Figli)
+        $newReservationId = $pm->create($reservationObject);        
+        // Calcolare il Totale
+        $total = 0.0;
+        foreach ($reservationObject->getItems() as $item) {
+            $total += $item->getSubtotal();
+        }
+        // Creare e Salvare il Pagamento
+        $paymentObject = new EPayment(
+            null, 
+            $idCreditCard, 
+            $newReservationId, 
+            $total, 
+            new DateTime(), 
+            StatoPagamento::COMPLETATO // <-- CORREZIONE 3: (necessita 'use Entity\StatoPagamento;')
+        );
+        $pm->create($paymentObject);
+        // Pulire la Sessione
+        $session->deleteValue('reservation_in_progress');
+        $session->deleteValue('cart');
+        // PRG (Redirect)
+        header("Location: /IlRitrovo/public/User/showHomePage");
+        exit;
     }
 }

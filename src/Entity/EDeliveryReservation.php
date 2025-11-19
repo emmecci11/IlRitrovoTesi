@@ -219,6 +219,23 @@ class EDeliveryReservation implements JsonSerializable {
     }
 
     /**
+     * Calcola e restituisce il prezzo totale della prenotazione 
+     * sommando i subtotali di tutti gli item.
+     *
+     * @return float Il totale calcolato
+     */
+    public function getTotPrice(): float {
+        $total = 0.0;
+        
+        // Ciclo sugli item presenti nell'oggetto
+        foreach ($this->getItems() as $item) {
+            $total += $item->getSubtotal();
+        }
+        
+        return $total;
+    }
+
+    /**
      * Ottieni le proprietà dell'oggetto come array associativo.
      *
      * @return array Associative array di proprietà dell'oggetto.
