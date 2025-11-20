@@ -11,54 +11,45 @@
 
     <body style="background-color: #f8f1e8;">
 
-        <!-- Header rendered through the View -->
-
-        <!-- Profile -->
         <div class="panel panel-default">
             <div class="panel-heading">User Profile</div>
             <div class="panel-body">
                 <div class="profile-container">
-                    <!-- Profile Image -->
                     <div class="profile-image-section">
                         <img src="/IlRitrovo/src/Smarty/assets/images/logo/user.jpg" alt="Test User" class="profile-img current">
-                    </div> <!-- /.profile-image-section-->
-                    <!-- Metadata Section -->
+                    </div> 
                     <div class="profile-info-section">
-                        <!-- Username -->
                         <div class="username-header">
                             <h3><strong>Username: </strong>{$username}</h3>
-                        </div> <!-- /.username-header-->
-                        <!-- Group 1: Username + Email and Password -->
+                        </div>
                         <div class="user-info-group">
                             <div class="credentials-row">
                                 <div class="credential-item"><strong>Email: </strong>{$email}</div>
                                 <div class="credential-item"><strong>Password: </strong>********</div>
-                            </div> <!-- /.credentials-row -->
+                            </div>
                             <div class="form-action-right">
                                 <a href="/IlRitrovo/public/User/showEditProfileMetadata" class="btn edit">Edit</a>
-                            </div> <!-- /.form-action-right -->
-                        </div> <!-- /.user-info-group -->
+                            </div>
+                        </div>
                         <hr class="separator">
-                        <!-- Group 2: Personal Data -->
                         <div class="user-info-group">
                             <div class="personal-data-row">
                                 <div class="personal-item"><strong>Name:</strong> {$name}</div>
                                 <div class="personal-item"><strong>Surname:</strong> {$surname}</div>
-                            </div> <!-- /.personal-data-row -->
+                            </div>
                             <div class="personal-data-row">
                                 <div class="personal-item"><strong>Birth Date:</strong> {$birthdate}</div>
                                 <div class="personal-item"><strong>Phone:</strong> {$phone}</div>
-                            </div> <!-- /.personal-data-row -->
+                            </div>
                             <div class="form-action-right">
                                 <a href="/IlRitrovo/public/User/showEditProfileData" class="btn edit">Edit</a>
-                            </div> <!-- /.form-action-right -->
-                        </div> <!-- /.user-info-group -->
-                    </div> <!-- /.profile-info-section-->
-                </div> <!-- /.profile-container -->
-            </div> <!-- /.panel-body -->
-        </div> <!-- /.panel panel-default -->
+                            </div>
+                        </div>
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
 
-        <!-- Cards -->
         <div class="panel">
             <div class="panel-heading">My Credit Cards</div>
             <div class="card-row">
@@ -78,28 +69,22 @@
                         </div>
                     </div>
                 {/foreach}
-                <!-- Add card button linking to separate page -->
                 <div class="credit-card add-card-btn" title="Aggiungi nuova carta">
                     <a href="/IlRitrovo/public/CreditCard/showAddCreditCardUserProfile" class="card-header"
                     style="text-align:center; font-size:2.5rem; cursor:pointer; user-select:none; color:#ff9f43;">+ </a>
-                </div> <!-- /.credit-card add-card-btn-->
-            </div> <!-- /.card-row-->
-        </div> <!-- /.panel-->
+                </div>
+            </div>
+        </div>
 
-        <!-- FUTURE Reservations-->
         <div class="panel">
             <div class="panel-heading">My Future Reservations</div>
             {foreach from=$futureReservations item=reservation}
                 <div class="reservation-card">
                     <ul>
                         <li><strong>Type:</strong>
-                            {if $reservation->getIdRoom() !== null}
-                                Room
-                            {elseif $reservation->getIdTable() !== null}
-                                Table
-                            {else}
-                                Unknown
-                            {/if}
+                            {if $reservation->getIdRoom() !== null} Room
+                            {elseif $reservation->getIdTable() !== null} Table
+                            {else} Unknown {/if}
                         </li>
                         <li><strong>Guests:</strong> {$reservation->getPeople()}</li>
                         <li><strong>Reservation Date:</strong> {$reservation->getReservationDate()}</li>
@@ -113,14 +98,10 @@
                                         <li>{$extra->getNameExtra()} - €{$extra->getPriceExtra()}</li>
                                     {/foreach}
                                 </ul>
-                            {else}
-                                No
-                            {/if}
+                            {else} No {/if}
                         </li>
                         <li><strong>Total Amount:</strong> €{$reservation->getTotPrice()}</li>
                     </ul>
-
-                    <!-- Pulsante Disdici -->
                     <div class="reservation-actions" style="text-align:right; margin-top:10px;">
                         <a href="/IlRitrovo/public/Reservation/showRemoveReservation/{$reservation->getIdReservation()}"
                             class="cancel-btn"
@@ -128,20 +109,20 @@
                             Disdici
                         </a>
                     </div>
-                </div> <!-- /.reservation-card-->
+                </div>
             {/foreach}
-        </div> <!-- /.panel-->
+        </div>
 
         {if $pastReservations|@count > 0}
-            <!-- PAST Reservations-->
             <div class="panel">
                 <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
                     <span>My Past Reservations</span>
-                </div> <!-- /.panel-heading-->
+                </div>
+                
                 <div class="panel" style="background-color: #f8f1e8;">
                     <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
                         <span>My Review</span>
-                    </div> <!-- /.panel-heading-->
+                    </div>
                     {if $review === null}
                         <div class="review-form">
                             <form action="/IlRitrovo/public/Review/checkAddReview" method="post">
@@ -151,14 +132,14 @@
                                         <input type="radio" name="stars" id="star{$i}" value="{$i}" required>
                                         <label for="star{$i}">★</label>
                                     {/for}
-                                </div> <!-- /.rating-stars-->
+                                </div>
                                 <label for="body">Your Review:</label>
                                 <textarea name="body" rows="4" required>{$body|default:''}</textarea>
                                 <div class="form-action-right">
                                     <button type="submit" class="btn save">Submit</button>
-                                </div> <!-- /.form-action-right-->
+                                </div>
                             </form>
-                        </div> <!-- /.review-form-->
+                        </div>
                     {else}
                         <div class="review-form">
                             <div class="existing-review">
@@ -166,90 +147,87 @@
                                 <p><strong>Review:</strong> {$review->getBody()}</p>
                                 <div class="form-action-right">
                                     <a href="/IlRitrovo/public/Review/deleteReview/{$review->getIdReview()}" class="btn delete">Delete</a>
-                                </div> <!-- /.form-action-right-->
-                            </div> <!-- /.esisting-review-->
+                                </div>
+                            </div>
                             {if $review->getReply() !== null}
                                 <div class="admin-reply" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #c7b299;">
                                     <p><strong>Reply from the restaurant:</strong></p>
                                     <p>{$review->getReply()->getBody()}</p>
-                                </div> <!-- /.admin-reply-->
+                                </div>
                             {/if}
-                        </div> <!-- /.review-form-->
+                        </div>
                     {/if}
-                </div> <!-- /.panel-->
+                </div> 
+
                 {foreach from=$pastReservations item=reservation}
                     <div class="reservation-card">
                         <ul>
                             <li><strong>Type:</strong>
-                                {if $reservation->getIdRoom() !== null}
-                                    Room
-                                {elseif $reservation->getIdTable() !== null}
-                                    Table
-                                {else}
-                                    Unknown
-                                {/if}
+                                {if $reservation->getIdRoom() !== null} Room
+                                {elseif $reservation->getIdTable() !== null} Table
+                                {else} Unknown {/if}
                             </li>
                             <li><strong>Guests:</strong> {$reservation->getPeople()}</li>
                             <li><strong>Reservation Date:</strong> {$reservation->getReservationDate()}</li>
-                            <li><strong>Time Frame:</strong> {$reservation->getReservationTimeFrame()}</li>
                             <li><strong>Status:</strong> {$reservation->getState()}</li>
-                            <li><strong>Notes:</strong> {$reservation->getComment()}</li>
-                            <li><strong>Extras:</strong>
-                                {if $reservation->getExtras()|@count > 0}
-                                    <ul class="extras-list">
-                                        {foreach from=$reservation->getExtras() item=extra}
-                                            <li>{$extra->getNameExtra()} - €{$extra->getPriceExtra()}</li>
-                                        {/foreach}
-                                    </ul>
-                                {else}
-                                    No
-                                {/if}
-                            </li>
                             <li><strong>Total Amount:</strong> €{$reservation->getTotPrice()}</li>
                         </ul>
                         <div class="payment-info">
                             <a href="/IlRitrovo/public/Reservation/showInvoice/{$reservation->getIdReservation()}" class="btn download-invoice" style="display: inline-block; background-color:#8b3a3a; color:#fff; padding:8px 8px; border-radius:8px; text-decoration:none; font-weight:bold;">Fattura</a>
-                        </div> <!-- /.payment-info -->
-                    </div> <!-- /.reservation-card-->
+                        </div>
+                    </div>
                 {/foreach}
-            </div> <!-- /.panel-->
+            </div>
         {/if}
 
+        {if $deliveryReservations|@count > 0}
+        <div class="panel">
+            <div class="panel-heading">My Delivery Orders</div>
+            <div class="reservation-container"> 
+                
+                {foreach from=$deliveryReservations item=deliveryRes}
+                    <div class="reservation-card">
+                        <div class="reservation-header">
+                            Delivery #{$deliveryRes->getIdDeliveryReservation()}
+                            <span style="float:right; font-size:0.9rem; color:#666;">
+                                {$deliveryRes->getWishedTime()|date_format:"%d/%m/%Y %H:%M"}
+                            </span>
+                        </div>
+                        
+                        <div class="reservation-details">
+                            <div class="reservation-row">
+                                <span><strong>Address:</strong></span>
+                                <span>{$deliveryRes->getUserAddress()}, {$deliveryRes->getUserNumberAddress()}</span>
+                            </div>
+                            <div class="reservation-row">
+                                <span><strong>Phone:</strong></span>
+                                <span>{$deliveryRes->getUserPhone()}</span>
+                            </div>
+                            
+                            <div class="reservation-row" style="flex-direction: column; align-items: flex-start;">
+                                <span><strong>Items:</strong></span>
+                                <ul class="extras-list">
+                                    {foreach from=$deliveryRes->getItems() item=item}
+                                        <li>
+                                            {$item->getProduct()->getNameProduct()} 
+                                            (x{$item->getQuantity()}) 
+                                            - €{$item->getSubtotal()|string_format:"%.2f"}
+                                        </li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                            
+                            <div class="reservation-row" style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 5px;">
+                                <span><strong>Total Paid:</strong></span>
+                                <span style="color: #8b3a3a; font-weight: bold;">
+                                    €{$deliveryRes->getTotPrice()|string_format:"%.2f"}
+                                </span>
+                            </div>
+                        </div>
+                    </div> {/foreach}
+                
+            </div> </div> {/if}
 
-    <!--DELIVERY RESERVATION SECTION-->
-    {if $deliveryData|@count > 0}
-    <div class="panel">
-        <div class="panel-heading">My Delivery Reservations</div>
-
-        {foreach from=$deliveryData item=delivery}
-            <div class="reservation-card">
-                <ul>
-                    <li><strong>Phone:</strong> {$delivery.userPhone}</li>
-                    <li><strong>Address:</strong> {$delivery.userAddress}, {$delivery.userNumberAddress}</li>
-                    <li><strong>Wished Time:</strong> {$delivery.wishedTime->format('d/m/Y H:i')}</li>
-                </ul>
-
-                <div class="delivery-items">
-                    <strong>Items:</strong>
-                    <ul>
-                        {foreach from=$delivery.items item=item}
-                            <li>
-                                {$item.name} × {$item.quantity} — 
-                                <span style="color:#555;">€{$item.subtotal|number_format:2:",":"."}</span>
-                            </li>
-                        {/foreach}
-                    </ul>
-                </div>
-
-                <div class="total-amount" style="text-align:right; font-weight:bold; margin-top:10px;">
-                    Total: €{$delivery.total|number_format:2:",":"."}
-                </div>
-            </div> <!-- /.reservation-card -->
-        {/foreach}
-    </div> <!-- /.panel -->
-    {/if}
-
-        <!-- Footer-->
         {include file='footerUser.tpl'}
     </body>
 </html>

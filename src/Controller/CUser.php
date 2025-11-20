@@ -105,15 +105,14 @@ class CUser {
         $userCreditCards=FPersistentManager::getInstance()->readCreditCardsByUser($idUser, FCreditCard::class);
         $userPastReservations=FPersistentManager::getInstance()->readPastReservationsByUserId($idUser, FReservation::class);
         $userFutureReservations=FPersistentManager::getInstance()->readFutureReservationsByUserId($idUser, FReservation::class);
+        $deliveryReservations=FPersistentManager::getInstance()->readCompleteDeliveryReservationsByUser($idUser);
         $userReview=FPersistentManager::getInstance()->readReviewByUserId($idUser, FReview::class);
         if($userReview!==null && $userReview->getIdReply()!==null) {
             $reply=FPersistentManager::getInstance()->read($userReview->getIdReply(), FReply::class);
             $userReview->setReply($reply);
         }
-        //Ottengo tutte le prenotazioni di tipo delivery
-        $deliveryData=CDelivery::getDeliveryReservationModel();
         $view->showUserHeader($isLogged);
-        $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $deliveryData, $userReview);
+        $view->showProfile($username, $email, $name, $surname, $birthDate, $phone, $edit_section, $userCreditCards, $userPastReservations, $userFutureReservations, $deliveryReservations, $userReview);
     }
 
     /**
